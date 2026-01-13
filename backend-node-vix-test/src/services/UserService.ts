@@ -34,10 +34,10 @@ export class UserService {
     }
   }
 
-  async createUser(data: TUserCreated, currentUser: user) {
+  async createUser(data: TUserCreated, currentUser?: user) {
     // Corrigido
     const validData = userCreatedSchema.parse(data); // Corrigido
-    const newUser = await this.userModel.createUser(validData, currentUser);
+    const newUser = await this.userModel.createUser(validData);
     return newUser;
   }
 

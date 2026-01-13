@@ -32,10 +32,7 @@ export class UserModel {
   }
 
   // Cria um novo usuário com validação de dados
-  async createUser(
-    data: Prisma.userCreateInput,
-    currentUser: user,
-  ): Promise<TUserCreated> {
+  async createUser(data: Prisma.userCreateInput): Promise<TUserCreated> {
     const userCreated = await prisma.user.create({
       data,
     });

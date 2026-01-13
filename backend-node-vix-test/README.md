@@ -24,6 +24,23 @@ npm run lint:fix
 npm run format
 ```
 
+## 🧪 Testes
+
+O projeto possui testes unitários e de integração para garantir a funcionalidade e segurança da aplicação.
+Atualmente, o serviço de Autenticação (Login) está coberto por testes unitários, validando cenários de sucesso e erro.
+
+Para executar os testes:
+
+```bash
+npm test
+```
+
+Para executar em modo watch:
+
+```bash
+npm run test:dev
+```
+
 ## 📦 Instalação
 
 ```bash

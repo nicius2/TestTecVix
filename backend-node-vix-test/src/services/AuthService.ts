@@ -2,9 +2,10 @@ import { UserModel } from "../models/UserModel";
 import { AppError } from "../errors/AppError";
 import { ERROR_MESSAGE } from "../constants/erroMessages";
 import { STATUS_CODE } from "../constants/statusCode";
-import { compare } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import { genToken } from "../utils/jwt";
 import { user } from "@prisma/client";
+import { TRegister } from "../types/validations/Auth/register";
 
 type UserWithoutPassword = Omit<user, "password">;
 
@@ -41,6 +42,34 @@ export class AuthService {
 
     return {
       token,
+      user: userWithoutPassword,
+    };
+  }
+
+  async register(data: TRegister): Promise<{ user: UserWithoutPassword }> {
+    const userAlreadyExists = await this.userModel.getByEmail(data.email);
+
+    if (userAlreadyExists) {
+      throw new AppError(
+        ERROR_MESSAGE.USER_ALREADY_EXISTS,
+        STATUS_CODE.CONFLICT,
+      );
+    }
+
+    const hashedPassword = await hash(data.password, 8);
+
+    const newUser = await this.userModel.createUser({
+      username: data.username,
+      email: data.email,
+      password: hashedPassword,
+      role: "member",
+      isActive: true,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _password, ...userWithoutPassword } = newUser as user;
+
+    return {
       user: userWithoutPassword,
     };
   }
