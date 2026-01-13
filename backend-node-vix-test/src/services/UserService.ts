@@ -17,7 +17,7 @@ export class UserService {
   constructor() {}
   private userModel = new UserModel();
 
-  async getById(id: number) {
+  async getById(id: string) {
     const user = await this.userModel.getById(id);
     if (!user) {
       throw new AppError(ERROR_MESSAGE.USER_NOT_FOUND, STATUS_CODE.NOT_FOUND);
@@ -41,7 +41,7 @@ export class UserService {
     return newUser;
   }
 
-  async updateUser(id: number, data: TUserUpdated, currentUser: user) {
+  async updateUser(id: string, data: TUserUpdated, currentUser: user) {
     // Corrigido
     const validData = userUpdatedSchema.parse(data); // Corrigido
     const existingUser = await this.userModel.getById(id);
@@ -58,7 +58,7 @@ export class UserService {
     return updatedUser;
   }
 
-  async deleteUser(id: number, currentUser: user) {
+  async deleteUser(id: string, currentUser: user) {
     const existingUser = await this.userModel.getById(id);
 
     if (!existingUser) {
