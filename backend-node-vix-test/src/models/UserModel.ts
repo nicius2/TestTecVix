@@ -11,9 +11,16 @@ import {
 
 export class UserModel {
   // Busca um usuário pelo ID
-  async getById(id: number): Promise<user | null> {
+  async getById(id: string): Promise<user | null> {
     return prisma.user.findUnique({
-      where: { idUser: id.toString() }, // Converte o ID para string
+      where: { idUser: id },
+    });
+  }
+
+  // Busca um usuário pelo email
+  async getByEmail(email: string): Promise<user | null> {
+    return prisma.user.findFirst({
+      where: { email },
     });
   }
 
@@ -37,21 +44,21 @@ export class UserModel {
 
   // Atualiza um usuário existente
   async updateUser(
-    id: number,
+    id: string,
     data: Prisma.userUpdateInput,
     currentUser: user,
   ): Promise<TUserUpdated> {
     const updatedUser = await prisma.user.update({
-      where: { idUser: id.toString() }, // Converte o ID para string
+      where: { idUser: id },
       data,
     });
     return userUpdatedSchema.parse(updatedUser); // Valida os dados atualizados
   }
 
   // Deleta um usuário pelo ID
-  async deleteUser(id: number): Promise<user> {
+  async deleteUser(id: string): Promise<user> {
     return prisma.user.delete({
-      where: { idUser: id.toString() }, // Converte o ID para string
+      where: { idUser: id },
     });
   }
 }
