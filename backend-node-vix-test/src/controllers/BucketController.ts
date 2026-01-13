@@ -20,13 +20,7 @@ export class BucketController {
     try {
       const { objectName } = paramsSchema.parse(req.params);
 
-      const filePath = path.join(
-        __dirname,
-        "..",
-        "..",
-        "uploads",
-        objectName,
-      );
+      const filePath = path.join(__dirname, "..", "..", "uploads", objectName);
 
       return res.sendFile(filePath);
     } catch (error) {
@@ -42,15 +36,11 @@ export class BucketController {
     }
   }
 
-  async getFileByObjectName(
-    req: CustomRequest<unknown>,
-    res: Response,
-  ) {
+  async getFileByObjectName(req: CustomRequest<unknown>, res: Response) {
     try {
       const { objectName } = paramsSchema.parse(req.params);
 
-      const response =
-        await this.bucketService.renewPresignedUrl(objectName);
+      const response = await this.bucketService.renewPresignedUrl(objectName);
 
       return res.status(STATUS_CODE.OK).json({ url: response });
     } catch (error) {
