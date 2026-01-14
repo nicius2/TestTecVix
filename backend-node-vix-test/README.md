@@ -43,6 +43,22 @@ O sistema implementa controle de acesso baseado em cargos (Role-Based Access Con
 
 > **Nota:** As rotas de autenticação (`/login`, `/register`) são públicas.
 
+### Credenciais de Usuários de Teste
+
+Para facilitar testes e desenvolvimento local, utilize as seguintes credenciais:
+
+- **Admin:**
+  - **Email:** `admin@vituax.com`
+  - **Senha:** `Admin@123`
+
+- **Manager:**
+  - **Email:** `manager@vituax.com`
+  - **Senha:** `Manager@123`
+
+- **Member:**
+  - **Email:** `member@vituax.com`
+  - **Senha:** `Member@123`
+
 ---
 
 ## 🧪 Qualidade de Código
