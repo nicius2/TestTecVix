@@ -6,16 +6,16 @@ API desenvolvida em **Node.js com TypeScript** como parte do teste técnico da *
 
 ## 🚀 Tecnologias Utilizadas
 
-* **Node.js** – Ambiente de execução
-* **TypeScript** – Tipagem estática e segurança
-* **Express** – Framework HTTP
-* **Zod** – Validação e tipagem de dados
-* **JWT (JSON Web Token)** – Autenticação
-* **ESLint** – Padronização e análise estática
-* **Prettier** – Formatação de código
-* **Swagger** – Documentação da API
-* **Jest** – Testes unitários e de integração
-* **ts-node-dev** – Ambiente de desenvolvimento
+- **Node.js** – Ambiente de execução
+- **TypeScript** – Tipagem estática e segurança
+- **Express** – Framework HTTP
+- **Zod** – Validação e tipagem de dados
+- **JWT (JSON Web Token)** – Autenticação
+- **ESLint** – Padronização e análise estática
+- **Prettier** – Formatação de código
+- **Swagger** – Documentação da API
+- **Jest** – Testes unitários e de integração
+- **ts-node-dev** – Ambiente de desenvolvimento
 
 ---
 
@@ -23,13 +23,25 @@ API desenvolvida em **Node.js com TypeScript** como parte do teste técnico da *
 
 O projeto adota uma separação clara de responsabilidades:
 
-* **Controllers** – Camada HTTP (request/response)
-* **Services** – Regras de negócio
-* **Models/Repositories** – Acesso a dados
-* **Schemas (Zod)** – Validação e tipagem de entrada
-* **Middlewares** – Autenticação, erros e validações
+- **Controllers** – Camada HTTP (request/response)
+- **Services** – Regras de negócio
+- **Models/Repositories** – Acesso a dados
+- **Schemas (Zod)** – Validação e tipagem de entrada
+- **Middlewares** – Autenticação, erros e validações
 
 Essa abordagem facilita manutenção, testes e escalabilidade.
+
+---
+
+## 🔐 Controle de Acesso (RBAC)
+
+O sistema implementa controle de acesso baseado em cargos (Role-Based Access Control) para proteger os recursos. As permissões são definidas da seguinte forma:
+
+- **Member (Membro):** Somente leitura. Acesso apenas a rotas `GET`.
+- **Manager (Gerente):** Pode ler, criar e editar recursos. Acesso a rotas `GET`, `POST` e `PUT`.
+- **Admin (Administrador):** Acesso total. Pode ler, criar, editar e deletar recursos (`GET`, `POST`, `PUT`, `DELETE`).
+
+> **Nota:** As rotas de autenticação (`/login`, `/register`) são públicas.
 
 ---
 
@@ -53,12 +65,13 @@ O projeto conta com **testes unitários e de integração**, garantindo confiabi
 
 ### Cobertura atual
 
-* ✅ Rotas de CRUD para usuários
-* ✅ Registro de usuário
-* ✅ Autenticação (login)
-* ✅ Geração e validação de JWT
-* ✅ Cenários de sucesso e erro nas rotas
-* ✅ Validação de dados de entrada
+- ✅ Rotas de CRUD para usuários
+- ✅ Registro de usuário
+- ✅ Autenticação (login)
+- ✅ Geração e validação de JWT
+- ✅ Cenários de sucesso e erro nas rotas
+- ✅ Validação de dados de entrada
+- ✅ Proteção de rotas baseada em cargos (RBAC)
 
 ### Executar os testes
 
@@ -125,10 +138,10 @@ http://localhost:3001/docs
 
 O projeto segue o padrão **Conventional Commits**, por exemplo:
 
-* `feat: adiciona autenticação jwt`
-* `fix: corrige validação de login`
-* `test: adiciona testes unitários de autenticação`
-* `refactor: melhora estrutura do service de usuários`
+- `feat: adiciona autenticação jwt`
+- `fix: corrige validação de login`
+- `test: adiciona testes unitários de autenticação`
+- `refactor: melhora estrutura do service de usuários`
 
 ---
 
@@ -136,8 +149,8 @@ O projeto segue o padrão **Conventional Commits**, por exemplo:
 
 Este projeto foi desenvolvido com foco em:
 
-* Clareza de código
-* Boas práticas de backend
-* Segurança
-* Testabilidade
-* Manutenibilidade
+- Clareza de código
+- Boas práticas de backend
+- Segurança
+- Testabilidade
+- Manutenibilidade
