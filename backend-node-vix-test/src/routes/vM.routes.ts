@@ -3,7 +3,6 @@ import { VMController } from "../controllers/VMController";
 import { API_VERSION, ROOT_PATH } from "../constants/basePathRoutes";
 import { isManagerOrIsAdmin } from "../auth/isManagerOrIsAdmin";
 import { isAdmin } from "../auth/isAdmin";
-import { authUser } from "../auth/authUser";
 
 const BASE_PATH = API_VERSION.V1 + ROOT_PATH.VM; // /api/v1/vm
 
@@ -16,16 +15,16 @@ export const makeVMController = () => {
 const vMController = makeVMController();
 
 // ========= GETs =========
-vMRoutes.get(BASE_PATH, authUser, async (req, res) => {
+vMRoutes.get(BASE_PATH, async (req, res) => {
   await vMController.listAll(req, res);
 });
 
-vMRoutes.get(`${BASE_PATH}/:idVM`, authUser, async (req, res) => {
+vMRoutes.get(`${BASE_PATH}/:idVM`, async (req, res) => {
   await vMController.getById(req, res);
 });
 
 // ========= POSTs =========
-vMRoutes.post(BASE_PATH, authUser, isManagerOrIsAdmin, async (req, res) => {
+vMRoutes.post(BASE_PATH, isManagerOrIsAdmin, async (req, res) => {
   await vMController.createVM(req, res);
 });
 
@@ -33,7 +32,6 @@ vMRoutes.post(BASE_PATH, authUser, isManagerOrIsAdmin, async (req, res) => {
 
 vMRoutes.put(
   `${BASE_PATH}/:idVM`,
-  authUser,
 
   isManagerOrIsAdmin,
   async (req, res) => {
@@ -42,7 +40,7 @@ vMRoutes.put(
 );
 
 // ======== DELETEs ========
-vMRoutes.delete(`${BASE_PATH}/:idVM`, authUser, isAdmin, async (req, res) => {
+vMRoutes.delete(`${BASE_PATH}/:idVM`, isAdmin, async (req, res) => {
   await vMController.deleteVM(req, res);
 });
 

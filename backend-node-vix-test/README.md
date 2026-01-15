@@ -43,6 +43,15 @@ O sistema implementa controle de acesso baseado em cargos (Role-Based Access Con
 
 > **Nota:** As rotas de autenticação (`/login`, `/register`) são públicas.
 
+### Middleware de Autenticação (`authUser`)
+
+Todas as rotas, **com exceção das rotas de autenticação**, são protegidas pelo middleware `authUser`. Este middleware é responsável por:
+1.  Verificar a presença de um token JWT válido no cabeçalho `Authorization`.
+2.  Validar a integridade e autenticidade do token.
+3.  Carregar as informações do usuário (`req.user`) para uso posterior pelos middlewares de permissão (como `isManagerOrIsAdmin`) ou pelos controladores.
+
+A ausência ou invalidade de um token resultará em erro de acesso não autorizado, garantindo que apenas usuários autenticados possam interagir com os recursos protegidos da API.
+
 ### Credenciais de Usuários de Teste
 
 Para facilitar testes e desenvolvimento local, utilize as seguintes credenciais:
