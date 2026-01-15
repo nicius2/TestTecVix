@@ -217,6 +217,18 @@
         "pass": {
           "type": "string"
         },
+        "location": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "AZURE",
+            "AWS",
+            "GCP",
+            "LOCAL"
+          ]
+        },
         "vCPU": {
           "type": "integer"
         },
