@@ -36,8 +36,12 @@ export const useLoadingApp = (notLoginPage: boolean = false) => {
   };
 
   useEffect(() => {
+    if (!idUser && !notLoginPage) {
+      setLoading(false);
+      return;
+    }
     fetchTheme();
-  }, [path]);
+  }, [path, idUser, notLoginPage]);
 
   useEffect(() => {
     if (idUser) {
