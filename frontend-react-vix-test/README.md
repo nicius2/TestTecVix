@@ -30,6 +30,19 @@
   - **Feedback:** Exibe mensagens de erro ou sucesso via Toast.
   - **Fluxo:** Redireciona automaticamente para a tela de Login (`/login`) após o cadastro bem-sucedido.
 
+### Roteamento e Segurança
+
+O sistema de rotas utiliza o `react-router-dom` e implementa uma camada de segurança robusta através do componente `PrivatePage` (`src/auth/PrivatePage.tsx`).
+
+- **Componente `PrivatePage`:** Atua como um wrapper para todas as rotas protegidas.
+- **Verificação de Autenticação:** Verifica se o usuário possui um `idUser` válido no estado global (`useZUserProfile`). Caso contrário, redireciona automaticamente para `/login`.
+- **Controle de Acesso por Função (RBAC):**
+  - **`onlyAdmin`:** Restringe o acesso apenas a usuários com role 'admin'.
+  - **`onlyManagerOrAdmin`:** Permite acesso a 'manager' e 'admin'.
+  - Caso o usuário não tenha permissão, ele é redirecionado para a página anterior.
+- **Rotas Públicas:** `/login` e `/register` (envolvidas pelo `LoadingApp` para carregar configurações iniciais sem exigir auth).
+- **Rotas Privadas:** Todas as demais rotas internas, incluindo a rota de "404 Not Found", garantindo que a estrutura interna não seja exposta a usuários não autenticados.
+
 ### Gerenciamento de Estado e UI
 
 - **Carregamento da Aplicação (`useLoadingApp` hook):**
