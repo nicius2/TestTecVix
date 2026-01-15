@@ -5,6 +5,17 @@ import { LoginPage } from "../../../src/pages/Login";
 import "@testing-library/jest-dom/vitest";
 import loginJson from "../../../src/languages/en/loginRegister/loginRegisterPage.json";
 
+// Tipos para os mocks
+interface LinkProps {
+  children: React.ReactNode;
+  to?: string;
+  [key: string]: unknown;
+}
+
+interface TransProps {
+  children: React.ReactNode;
+}
+
 // Mock do tema
 const mockedTheme = (mode: "light" | "dark" = "dark") => ({
   mode: mode,
@@ -30,8 +41,8 @@ vi.mock("../../../src/stores/useZTheme", () => ({
 }));
 
 vi.mock("react-router-dom", () => ({
-  Link: ({ children, to, ...props }: any) => (
-    <a href={to || "/"} {...props}>
+  Link: ({ children, to = "/", ...props }: LinkProps) => (
+    <a href={to} {...props}>
       {children}
     </a>
   ),
@@ -54,7 +65,7 @@ vi.mock("react-i18next", () => ({
     },
     i18n: { changeLanguage: vi.fn(), language: "en" },
   }),
-  Trans: ({ children }: any) => children,
+  Trans: ({ children }: TransProps) => children,
 }));
 
 describe("LoginPage", () => {
@@ -67,8 +78,7 @@ describe("LoginPage", () => {
     expect(container).toBeTruthy();
   });
 
-  it.skip("should match snapshot", () => {
-    // Snapshot test skipped - update manually when needed
+  it("should match snapshot", () => {
     const { container } = render(<LoginPage />);
     expect(container).toMatchSnapshot();
   });
