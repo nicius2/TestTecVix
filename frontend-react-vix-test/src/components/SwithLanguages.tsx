@@ -95,13 +95,14 @@ export const SwithLanguages = ({ keepShow = false }: IProps) => {
         sx={{
           minHeight: "0px",
           width: "100%",
-          height: "30px",
+          height: "32px",
           background: theme[mode].blueMedium,
           display: "flex",
+          alignItems: "center",
           justifyContent: "space-between",
-          padding: "0px 8px",
+          padding: "0px 6px",
           borderRadius: "20px",
-          overflow: "hidden",
+          // overflow: "hidden",
         }}
       >
         <Stack
@@ -121,11 +122,13 @@ export const SwithLanguages = ({ keepShow = false }: IProps) => {
         onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "left",
+          horizontal: "center",
         }}
-        sx={{
-          mt: 0.2,
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
         }}
+        sx={{ mt: 0.5 }}
       >
         <List
           sx={{
@@ -136,6 +139,10 @@ export const SwithLanguages = ({ keepShow = false }: IProps) => {
             onClick={() => handleSelectLanguage("en")}
             sx={{
               cursor: "pointer",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: 36,
               ...(i18n.language === "en" && {
                 background: theme[mode].primary,
               }),
@@ -146,6 +153,10 @@ export const SwithLanguages = ({ keepShow = false }: IProps) => {
           <ListItem
             sx={{
               cursor: "pointer",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: 36,
               ...(i18n.language === "ptBr" && {
                 background: theme[mode].primary,
               }),
@@ -158,6 +169,10 @@ export const SwithLanguages = ({ keepShow = false }: IProps) => {
             onClick={() => handleSelectLanguage("es")}
             sx={{
               cursor: "pointer",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: 36,
               ...(i18n.language === "es" && {
                 background: theme[mode].primary,
               }),

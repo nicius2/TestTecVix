@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useZUserProfile } from "../stores/useZUserProfile";
 import { IBrandMasterResponse } from "../types/BrandMasterTypes";
 import { useBrandMasterInfos } from "./useBrandMasterInfos";
+import { AxiosError } from "axios";
 
 export const useLoadingApp = (notLoginPage: boolean = false) => {
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,10 @@ export const useLoadingApp = (notLoginPage: boolean = false) => {
     });
 
     if (theme.error) {
-      toast.error(theme.message);
+      const is401 = (theme.err as AxiosError)?.response?.status === 401;
+      if (!is401) {
+        toast.error(theme.message);
+      }
       return setLoading(false);
     }
 
@@ -32,8 +36,12 @@ export const useLoadingApp = (notLoginPage: boolean = false) => {
   };
 
   useEffect(() => {
+    if (!idUser && !notLoginPage) {
+      setLoading(false);
+      return;
+    }
     fetchTheme();
-  }, [path]);
+  }, [path, idUser, notLoginPage]);
 
   useEffect(() => {
     if (idUser) {

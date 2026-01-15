@@ -8,7 +8,8 @@ import { useZBrandInfo } from "../../../../stores/useZBrandStore";
 export const Contact = () => {
   const { mode, theme } = useZTheme();
   const { t } = useTranslation();
-  const { brandName, brandSite, brandPrivacyPolicy } = useZBrandInfo();
+  const { brandName, brandSite, brandPrivacyPolicy, brandContact } =
+    useZBrandInfo();
   return (
     <Stack
       sx={{
@@ -44,7 +45,24 @@ export const Contact = () => {
             </svg>
           </>
           {/* depois voltar linha abaixo para apenas brandName */}
-          {brandName !== "Vituax" ? "Vituax" : brandName}
+          {brandName}
+        </TextRob14FontXsB>
+      </Link>
+      {/* Separator */}
+      <Stack
+        sx={{
+          width: "8px",
+          height: "4px",
+          backgroundColor: theme[mode].blue,
+        }}
+      />
+      <Link to={brandContact || "#"} target="_blank">
+        <TextRob14FontXsB
+          sx={{
+            color: theme[mode].btnDarkBlue,
+          }}
+        >
+          {t("loginRegister.contact")}
         </TextRob14FontXsB>
       </Link>
       {/* Separator */}

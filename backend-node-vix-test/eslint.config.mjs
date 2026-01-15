@@ -18,11 +18,6 @@ export default [
       "@typescript-eslint": tseslintPlugin,
       prettier: prettierPlugin,
     },
-    rules: {
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/explicit-function-return-type": "off",
-    },
   },
   {
     ...pluginJs.configs.recommended,
@@ -35,6 +30,22 @@ export default [
   {
     rules: {
       ...prettierConfig.rules,
+    },
+  },
+  {
+    rules: {
+      "prettier/prettier": ["error", { endOfLine: "auto" }],
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "no-undef": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
     },
   },
   {

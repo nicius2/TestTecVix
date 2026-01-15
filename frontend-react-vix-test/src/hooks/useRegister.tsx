@@ -1,67 +1,63 @@
-import { useTranslation } from "react-i18next";
-import { toast } from "react-toastify";
+import { useState } from "react";
 import { api } from "../services/api";
-import { useZBrandInfo } from "../stores/useZBrandStore";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+interface IUserRegisterResponse {
+  message: string;
+}
+
 export const useRegister = () => {
-  const { t } = useTranslation();
-  const { idBrand } = useZBrandInfo();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return t("loginRegister.invalidEmail");
-    }
-    return null;
-  };
-
-  const validatePasswords = (password: string, confirmPassword: string) => {
-    if (!password) return t("loginRegister.invalidPassword");
-    if (password !== confirmPassword) {
-      return t("loginRegister.passwordMismatch");
-    }
-    return null;
-  };
   const goRegister = async ({
     username,
-    password,
     email,
+    password,
     confirmPassword,
   }: {
     username: string;
-    password: string;
     email: string;
+    password: string;
     confirmPassword: string;
   }) => {
-    if (!username) {
-      toast.error(t("loginRegister.invalidUsername"));
-      return;
-    }
-    const emailError = validateEmail(email);
-    const passwordError = validatePasswords(password, confirmPassword);
-    if (emailError || passwordError) {
-      toast.error(emailError || passwordError);
+    setIsLoading(true);
+
+    if (!username || !email || !password || !confirmPassword) {
+      setIsLoading(false);
+      toast.error("All fields are required.");
       return;
     }
 
-    const response = await api.post({
-      url: "/user",
+    if (password !== confirmPassword) {
+      setIsLoading(false);
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    const response = await api.post<IUserRegisterResponse>({
+      url: "/auth/register",
       data: {
         username,
-        password,
         email,
-        idBrandMaster: idBrand,
+        password,
+        confirmPassword,
       },
+      tryRefetch: false, // Registration is a one-time attempt
     });
 
+    setIsLoading(false);
     if (response.error) {
+      console.error("Registration error:", response.err); // Log for debugging
       toast.error(response.message);
       return;
     }
-    return navigate("/login");
+
+    toast.success(response.data.message || "Registration successful!");
+    // After successful registration, navigate to the login page
+    navigate("/login");
   };
 
-  return { goRegister };
+  return { goRegister, isLoading };
 };

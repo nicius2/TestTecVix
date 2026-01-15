@@ -1,103 +1,246 @@
-# Frontend React
+# Frontend React Vix Test
 
-## Getting started
+## Tecnologias Usadas
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- **React:** Biblioteca JavaScript para construção de interfaces de usuário.
+- **Vite:** Build tool que visa fornecer uma experiência de desenvolvimento mais rápida e leve para projetos web modernos.
+- **TypeScript:** Superset do JavaScript que adiciona tipagem estática.
+- **Tailwind CSS:** Framework CSS utility-first para estilização rápida.
+- **Material UI (MUI):** Biblioteca de componentes React para um design consistente e bonito.
+- **React Router Dom:** Biblioteca para roteamento no React.
+- **Axios:** Cliente HTTP baseado em promessas para o navegador e Node.js.
+- **React Toastify:** Biblioteca para notificações toast.
+- **i18next:** Framework de internacionalização.
+- **Zustand:** Solução de gerenciamento de estado pequena, rápida e escalável.
+- **Vitest:** Framework de testes unitários nativo do Vite.
+- **Testing Library:** Biblioteca para testar componentes React focada em boas práticas de acessibilidade.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Funcionalidades Implementadas
 
-## Add your files
+### Autenticação
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- **Login (`useLogin` hook):**
+  - Autenticação de usuários com suporte a Username/Email e Senha.
+  - Gerenciamento de estado de carregamento e exibição de mensagens de erro/sucesso via Toast.
+  - Armazenamento seguro de informações do usuário e token no estado global (Zustand).
+  - Redirecionamento automático após login bem-sucedido.
+- **Registro (`useRegister` hook):**
+  - Criação de novas contas de usuário enviando requisição `POST` para `/auth/register`.
+  - **Validação Frontend:** Verifica preenchimento de todos os campos e igualdade entre senha e confirmação de senha antes do envio.
+  - **Feedback:** Exibe mensagens de erro ou sucesso via Toast.
+  - **Fluxo:** Redireciona automaticamente para a tela de Login (`/login`) após o cadastro bem-sucedido.
 
+### Roteamento e Segurança
+
+O sistema de rotas utiliza o `react-router-dom` e implementa uma camada de segurança robusta através do componente `PrivatePage` (`src/auth/PrivatePage.tsx`).
+
+- **Componente `PrivatePage`:** Atua como um wrapper para todas as rotas protegidas.
+- **Verificação de Autenticação:** Verifica se o usuário possui um `idUser` válido no estado global (`useZUserProfile`). Caso contrário, redireciona automaticamente para `/login`.
+- **Controle de Acesso por Função (RBAC):**
+  - **`onlyAdmin`:** Restringe o acesso apenas a usuários com role 'admin'.
+  - **`onlyManagerOrAdmin`:** Permite acesso a 'manager' e 'admin'.
+  - Caso o usuário não tenha permissão, ele é redirecionado para a página anterior.
+- **Rotas Públicas:** `/login` e `/register` (envolvidas pelo `LoadingApp` para carregar configurações iniciais sem exigir auth).
+- **Rotas Privadas:** Todas as demais rotas internas, incluindo a rota de "404 Not Found", garantindo que a estrutura interna não seja exposta a usuários não autenticados.
+
+### Gerenciamento de Estado e UI
+
+- **Carregamento da Aplicação (`useLoadingApp` hook):**
+  - Gerenciamento do carregamento inicial de temas e configurações da marca (`/brand-master/self`).
+  - Tratamento otimizado de erros 401 (Unauthorized) para evitar alertas desnecessários em páginas públicas (Login/Registro).
+- **Componentes de UI:**
+  - Formulários de Login e Registro estilizados com Material UI e Tailwind.
+  - Suporte a troca de temas (Claro/Escuro) e idiomas.
+
+### Configuração e Estrutura
+
+- Estrutura de projeto organizada em componentes, hooks, páginas e serviços.
+- Configuração de rotas protegidas e públicas.
+- Integração com API RESTful via serviço de API centralizado (`src/services/api.ts`).
+
+## Testes
+
+O projeto utiliza **Vitest** e **React Testing Library** para garantir a qualidade do código.
+
+- **Snapshot Testing (`Register.test.tsx`):**
+  - Garante a integridade visual e estrutural da página de Registro.
+  - Utiliza mocks para dependências externas (`useZTheme`, `react-router-dom`, `i18next`) para testar o componente de forma isolada e determinística.
+- **Testes de Componentes (`Contact.test.tsx`):**
+  - Verifica a lógica de renderização de links dinâmicos baseados nas informações da marca (`useZBrandInfo`).
+  - Testa cenários de fallback (links padrão) quando as informações da marca não estão disponíveis.
+
+Para rodar os testes:
+
+```bash
+npm run test
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/vituax1/backend-node-api.git
-git branch -M main
-git push -uf origin main
+
+## Como Rodar o Projeto
+
+Este projeto utiliza **Node.js** e **npm** para gerenciamento de dependências. Certifique-se de ter o Node.js instalado em sua máquina.
+
+### Pré-requisitos
+
+- Node.js (versão 18 ou superior recomendada)
+- Gerenciador de pacotes (pnpm, npm ou yarn)
+
+### Passo a Passo
+
+1.  **Clone o repositório:**
+
+    ```bash
+    git clone <URL_DO_REPOSITORIO>
+    cd frontend-react-vix-test
+    ```
+
+2.  **Instale as dependências:**
+    Recomendamos o uso do `pnpm`.
+
+    ```bash
+    pnpm install
+    # ou
+    npm install
+    # ou
+    yarn install
+    ```
+
+3.  **Configuração de Variáveis de Ambiente:**
+    Crie um arquivo `.env` na raiz do projeto baseado no `.env.exemple` (se houver) ou configure as variáveis necessárias, como a URL da API.
+
+    ```env
+    VITE_BASE_URL=http://localhost:3001/api/v1
+    ```
+
+4.  **Rodar o Servidor de Desenvolvimento:**
+    Para iniciar o projeto em modo de desenvolvimento com hot-reload:
+    ```bash
+    pnpm dev
+    # ou
+    npm run dev
+    ```
+    O servidor será iniciará em `http://localhost:3000`.
+
+### Scripts Disponíveis
+
+- `pnpm dev`: Inicia o servidor de desenvolvimento.
+- `pnpm build`: Compila o projeto para produção (gera a pasta `dist`).
+- `pnpm preview`: Visualiza a versão de produção localmente após o build.
+- `pnpm test`: Executa os testes unitários com Vitest.
+- `pnpm test:coverage`: Executa os testes e gera relatório de cobertura.
+- `pnpm lint`: Executa o ESLint para verificar problemas no código.
+- `pnpm format`: Formata o código usando Prettier.
+
+### Rodando com Docker (Opcional)
+
+Se preferir rodar via Docker Compose:
+
+```bash
+docker compose up -d --build
 ```
 
-## Integrate with your tools
+Isso irá construir a imagem e subir o container da aplicação.
+Para parar:
 
-- [ ] [Set up project integrations](https://gitlab.com/vituax1/backend-node-api/-/settings/integrations)
+```bash
+docker compose down
+```
 
-## Collaborate with your team
+## Documentação de CI e Testes
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### Integração Contínua (CI)
 
-## Test and Deploy
+O projeto utiliza o GitLab CI para automação de build, testes e deploy. A configuração está definida no arquivo `.gitlab-ci.yml`.
 
-Use the built-in continuous integration in GitLab.
+#### Estrutura do Pipeline
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+O pipeline está dividido nos seguintes estágios:
+1.  **build**: Instalação de dependências e compilação do projeto.
+2.  **test**: Execução dos testes automatizados e verificação de cobertura de código.
+3.  **deploy**: Implantação da aplicação em ambientes específicos (staging/produção).
+
+#### Jobs e Branches
+
+| Branch Trigger (Regex) | Jobs Executados | Descrição |
+| :--- | :--- | :--- |
+| `feature/*` | `build_feature`, `test_feature` | Pipelines para desenvolvimento de novas funcionalidades. Executa build e testes com cobertura. |
+| `sprint-ref/*` | `build_sprint`, `test_sprint`, `deploy_staging` | Pipelines para branches de sprint. Inclui deploy para o ambiente de **staging**. |
+| `hotfix/*` | `build_hotfix`, `test_hotfix` | Pipelines para correções urgentes. Executa build e testes. |
+| `project-ref/*b` | `build_project_hotfix`, `test_project_hotfix` | Pipelines para correções de projeto específicas. Executa build e testes. |
+| `main` | `deploy_main_after_hotfix` | Pipeline executado na branch principal para deploy em **produção** após hotfix. |
+
+#### Configuração dos Jobs de Teste
+
+Todos os jobs de teste (`test_feature`, `test_sprint`, etc.) compartilham a seguinte configuração base:
+-   **Imagem Docker**: `node:16`
+-   **Script**:
+    ```bash
+    npm install
+    npm run test:coverage
+    ```
+-   **Regex de Cobertura**: Captura a porcentagem de cobertura da saída do console (`/All files[^|]*\|[^|]*\s+([\d\.]+)%/`).
 
 ---
 
-# Editing this README
+### Testes Automatizados (Login e Register)
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+Os testes foram implementados utilizando **Vitest** e **React Testing Library**. Eles cobrem renderização, snapshots e lógicas de interação de formulário.
 
-## Suggestions for a good README
+#### Estrutura de Testes
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Os testes estão localizados no diretório `tests/` e espelham a estrutura de `src/`.
 
-## Name
+#### 1. Testes de Login
 
-Choose a self-explaining name for your project.
+**Arquivo:** `tests/pages/Login/Login.test.tsx`
+*   **Tipo**: Teste de Unidade / Snapshot.
+*   **Cobertura**:
+    *   Verifica se a página renderiza sem erros (`should render without crashing`).
+    *   Verifica se a estrutura visual permanece consistente (`should match snapshot`).
+*   **Mocks**:
+    *   `useZTheme`: Simula o tema da aplicação.
+    *   `react-router-dom`: Simula `Link`, `useNavigate` e `useLocation`.
+    *   `react-i18next`: Simula traduções (`t`, `i18n`, `Trans`).
 
-## Description
+**Arquivo:** `tests/pages/Login/components/MainLoginForm/MainLoginForm.test.tsx`
+*   **Tipo**: Teste de Componente (Unidade).
+*   **Cobertura**:
+    *   Verifica a interatividade do checkbox "Manter conectado".
+    *   Testa o toggle de estado (checked/unchecked) ao clicar.
+*   **Mocks**: `useZTheme`, `react-i18next`.
 
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+#### 2. Testes de Registro (Register)
 
-## Badges
+**Arquivo:** `tests/pages/Register/Register.test.tsx`
+*   **Tipo**: Teste de Unidade / Snapshot.
+*   **Cobertura**:
+    *   Verifica a consistência visual da página de registro (`should match snapshot`).
+*   **Mocks**:
+    *   `useZTheme`: Simula o tema.
+    *   `react-router-dom`: Simula componentes de navegação.
+    *   `react-i18next`: Simula traduções.
 
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+**Arquivo:** `tests/pages/Register/components/MainRegisterForm/RegisterForm.test.tsx`
+*   **Tipo**: Teste de Integração (Lógica de Formulário).
+*   **Cobertura**:
+    *   **Renderização**: Verifica se todos os campos (usuário, email, senha, confirmar senha) estão presentes.
+    *   **Interação**: Verifica se é possível digitar nos campos de usuário e senha.
+    *   **Validação de Email**:
+        *   Exibe erro para email inválido no evento `blur`.
+        *   Garante que o erro não aparece para email válido.
+    *   **Validação de Senha**:
+        *   Exibe erro quando as senhas não coincidem (mismatch) no evento `blur`.
+        *   Não exibe erro quando as senhas são idênticas.
+*   **Mocks**: `useZTheme`, `react-i18next`.
 
-## Visuals
+#### Como Executar os Testes Localmente
 
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Para rodar os testes em sua máquina:
 
-## Installation
+```bash
+# Rodar todos os testes
+npm run test
 
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+# Rodar com relatório de cobertura
+npm run test:coverage
+```
 
-## Usage
-
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-
-Show your appreciation to those who have contributed to the project.
-
-## License
-
-For open source projects, say how it is licensed.
-
-## Project status
-
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.

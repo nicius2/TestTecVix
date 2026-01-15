@@ -5,6 +5,7 @@ import { STATUS_CODE } from "../constants/statusCode";
 import { verifyToken } from "../utils/jwt";
 import { CustomRequest } from "../types/custom";
 import { user } from "@prisma/client";
+import { UserModel } from "../models/UserModel";
 
 export const authUser = async (
   req: CustomRequest<user>,
@@ -17,12 +18,14 @@ export const authUser = async (
   }
   const token = authorization.split(" ")[1];
 
-  // const idUser = verifyToken(token);
-  // const user = //
+  const payload = verifyToken(token);
 
-  // if (isInvalidUser) {
-  //   throw new AppError(ERROR_MESSAGE.UNAUTHORIZED, STATUS_CODE.UNAUTHORIZED);
-  // }
-  // req.user = user;
+  const userModel = new UserModel();
+  const foundUser = await userModel.getById(payload.id);
+
+  if (!foundUser) {
+    throw new AppError(ERROR_MESSAGE.UNAUTHORIZED, STATUS_CODE.UNAUTHORIZED);
+  }
+  req.user = foundUser;
   return next();
 };
