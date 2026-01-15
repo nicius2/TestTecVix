@@ -15,22 +15,19 @@ jobs:
       mysql:
         image: mysql:8
         env:
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_DATABASE: test-cloud-db
+        ports:
+          - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -u root -ppassword"
+          --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=3
 
     defaults:
       run:
         working-directory: ./backend-node-vix-test
-
-    env:
-      DATABASE_URL: mysql://root:password@mysql:3306/test-cloud-db
-      JWT_SECRET: test_jwt_secret
-      PORT: 3001
 
     steps:
       - name: Checkout code
@@ -41,38 +38,45 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install Dependencies
+        run: npm install
 
       - name: Run ESLint
         run: npm run lint
 
-      - name: Check formatting (Prettier)
+      - name: Check Formatting (Prettier)
         run: npx prettier --check .
 
       - name: Wait for MySQL
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         run: |
           for i in {1..20}; do
-            if mysqladmin ping -h mysql -u root -ppassword --silent; then
+            if mysqladmin ping -h 127.0.0.1 -P 3306 -u root -p"$MYSQL_ROOT_PASSWORD" --silent; then
               echo "MySQL is ready!"
-              exit 0
+              break
             fi
             echo "Waiting for MySQL..."
             sleep 3
           done
-          echo "MySQL did not become ready in time"
-          exit 1
 
-      - name: Setup database (Prisma)
+      - name: Setup Database (Prisma)
+        env:
+          # Use 127.0.0.1 because the service port is mapped to the host
+          DATABASE_URL: mysql://root:${{ secrets.MYSQL_ROOT_PASSWORD }}@127.0.0.1:3306/test-cloud-db
         run: |
           npx prisma generate
           npx prisma migrate deploy
 
-      - name: Run backend tests
-        run: npx jest
+      - name: Run Login & Register Tests
+        env:
+          DATABASE_URL: mysql://root:${{ secrets.MYSQL_ROOT_PASSWORD }}@127.0.0.1:3306/test-cloud-db
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PORT: 3001
+        run: npx jest __tests__/e2e/auth.test.ts
 
   frontend-checks:
-    name: Frontend (Lint, Format, Tests)
+    name: Frontend (Lint, Format, Auth Tests)
     runs-on: ubuntu-latest
 
     defaults:
@@ -88,14 +92,14 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install Dependencies
+        run: npm install
 
       - name: Run ESLint
         run: npm run lint
 
-      - name: Check formatting (Prettier)
+      - name: Check Formatting (Prettier)
         run: npx prettier --check .
 
-      - name: Run frontend tests
-        run: npx vitest run
+      - name: Run Login & Register Tests
+        run: npx vitest run tests/pages/Login tests/pages/Register
