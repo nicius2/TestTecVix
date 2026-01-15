@@ -23,11 +23,9 @@ interface IUserLoginResponse {
   };
 }
 
-
 export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { setIsOpenModalUserNotActive, setLoginTime } =
-    useZGlobalVar();
+  const { setIsOpenModalUserNotActive, setLoginTime } = useZGlobalVar();
   const { setUser } = useZUserProfile();
   const { resetAllStates } = useZResetAllStates();
   const navigate = useNavigate();
@@ -58,9 +56,9 @@ export const useLogin = () => {
     } else if (username && email) {
       loginData = { password, email };
     } else {
-        setIsLoading(false);
-        toast.error("Email or Username is required.");
-        return;
+      setIsLoading(false);
+      toast.error("Email or Username is required.");
+      return;
     }
 
     const response = await api.post<IUserLoginResponse>({

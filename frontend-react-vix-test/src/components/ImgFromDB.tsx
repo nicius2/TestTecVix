@@ -22,7 +22,7 @@ export const ImgFromDB = ({
     getFileByObjectName(src).then(({ url }) => {
       setSrcIMage(url);
     });
-  }, [src]);
+  }, [src, getFileByObjectName]);
 
   if (isLoading)
     return (

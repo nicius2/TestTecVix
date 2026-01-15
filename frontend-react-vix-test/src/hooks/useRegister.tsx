@@ -2,7 +2,7 @@ import { useState } from "react";
 import { api } from "../services/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useZGlobalVar } from "../stores/useZGlobalVar";
+
 
 interface IUserRegisterResponse {
   message: string;
@@ -11,7 +11,6 @@ interface IUserRegisterResponse {
 export const useRegister = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { setLoginTime } = useZGlobalVar();
 
   const goRegister = async ({
     username,

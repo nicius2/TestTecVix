@@ -8,7 +8,8 @@ import { useZBrandInfo } from "../../../../stores/useZBrandStore";
 export const Contact = () => {
   const { mode, theme } = useZTheme();
   const { t } = useTranslation();
-  const { brandName, brandSite, brandPrivacyPolicy, brandContact } = useZBrandInfo();
+  const { brandName, brandSite, brandPrivacyPolicy, brandContact } =
+    useZBrandInfo();
   return (
     <Stack
       sx={{
