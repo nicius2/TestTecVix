@@ -43,7 +43,7 @@ export class UserModel {
   async updateUser(
     id: string,
     data: Prisma.userUpdateInput,
-    currentUser: user,
+    _currentUser: user,
   ): Promise<TUserUpdated> {
     const updatedUser = await prisma.user.update({
       where: { idUser: id },

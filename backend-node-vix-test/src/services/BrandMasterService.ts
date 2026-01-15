@@ -26,7 +26,7 @@ export class BrandMasterService {
     return this.brandMasterModel.listAll(validQuery);
   }
 
-  async createNewBrandMaster(data: TBrandMaster, user: user) {
+  async createNewBrandMaster(data: TBrandMaster, _user: user) {
     const validData = brandMasterSchema.parse(data);
 
     if (validData.contract) {
@@ -92,7 +92,7 @@ export class BrandMasterService {
     });
   }
 
-  async deleteBrandMaster(idBrandMaster: number, user: user) {
+  async deleteBrandMaster(idBrandMaster: number, _user: user) {
     const oldBrandMaster = await this.brandMasterModel.getById(idBrandMaster);
     if (!oldBrandMaster) {
       throw new AppError(

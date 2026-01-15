@@ -37,7 +37,7 @@ export class AuthService {
     const token = genToken({ id: user.idUser, role: user.role });
 
     // Remove password from user object before returning
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const { password: _password, ...userWithoutPassword } = user;
 
     return {
@@ -66,7 +66,6 @@ export class AuthService {
       isActive: true,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _password, ...userWithoutPassword } = newUser as user;
 
     return {

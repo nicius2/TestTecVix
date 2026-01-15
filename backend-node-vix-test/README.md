@@ -46,6 +46,7 @@ O sistema implementa controle de acesso baseado em cargos (Role-Based Access Con
 ### Middleware de Autenticação (`authUser`)
 
 Todas as rotas, **com exceção das rotas de autenticação**, são protegidas pelo middleware `authUser`. Este middleware é responsável por:
+
 1.  Verificar a presença de um token JWT válido no cabeçalho `Authorization`.
 2.  Validar a integridade e autenticidade do token.
 3.  Carregar as informações do usuário (`req.user`) para uso posterior pelos middlewares de permissão (como `isManagerOrIsAdmin`) ou pelos controladores.

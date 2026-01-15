@@ -29,12 +29,12 @@ export class UserService {
     try {
       const validatedQuery = userWhereInputSchema.parse(query); // Corrigido
       return this.userModel.listAll(validatedQuery);
-    } catch (error) {
+    } catch (_error) {
       throw new AppError(ERROR_MESSAGE.INVALID_DATA, STATUS_CODE.BAD_REQUEST);
     }
   }
 
-  async createUser(data: TUserCreated, currentUser?: user) {
+  async createUser(data: TUserCreated, _currentUser?: user) {
     // Corrigido
     const validData = userCreatedSchema.parse(data); // Corrigido
     const newUser = await this.userModel.createUser(validData);
@@ -58,7 +58,7 @@ export class UserService {
     return updatedUser;
   }
 
-  async deleteUser(id: string, currentUser: user) {
+  async deleteUser(id: string, _currentUser: user) {
     const existingUser = await this.userModel.getById(id);
 
     if (!existingUser) {

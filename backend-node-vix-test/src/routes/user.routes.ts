@@ -23,21 +23,13 @@ userRoutes.get(`${BASE_PATH}/:id`, async (req, res) => {
   await userController.getById(req, res);
 });
 
-userRoutes.post(
-  `${BASE_PATH}`,
-  isManagerOrIsAdmin,
-  async (req, res) => {
-    await userController.createUser(req, res);
-  },
-);
+userRoutes.post(`${BASE_PATH}`, isManagerOrIsAdmin, async (req, res) => {
+  await userController.createUser(req, res);
+});
 
-userRoutes.put(
-  `${BASE_PATH}/:id`,
-  isManagerOrIsAdmin,
-  async (req, res) => {
-    await userController.updateUser(req, res);
-  },
-);
+userRoutes.put(`${BASE_PATH}/:id`, isManagerOrIsAdmin, async (req, res) => {
+  await userController.updateUser(req, res);
+});
 
 userRoutes.delete(`${BASE_PATH}/:id`, isAdmin, async (req, res) => {
   await userController.deleteUser(req, res);

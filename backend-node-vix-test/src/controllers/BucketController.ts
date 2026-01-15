@@ -23,11 +23,11 @@ export class BucketController {
       const filePath = path.join(__dirname, "..", "..", "uploads", objectName);
 
       return res.sendFile(filePath);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
+    } catch (_error) {
+      if (_error instanceof z.ZodError) {
         return res
           .status(STATUS_CODE.BAD_REQUEST)
-          .json({ errors: error.errors });
+          .json({ errors: _error.errors });
       }
 
       return res
@@ -43,11 +43,11 @@ export class BucketController {
       const response = await this.bucketService.renewPresignedUrl(objectName);
 
       return res.status(STATUS_CODE.OK).json({ url: response });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
+    } catch (_error) {
+      if (_error instanceof z.ZodError) {
         return res
           .status(STATUS_CODE.BAD_REQUEST)
-          .json({ errors: error.errors });
+          .json({ errors: _error.errors });
       }
 
       return res
@@ -72,7 +72,7 @@ export class BucketController {
       );
 
       return res.status(STATUS_CODE.OK).json(response);
-    } catch (error) {
+    } catch (_error) {
       return res
         .status(STATUS_CODE.SERVER_ERROR)
         .json({ message: "Internal server error" });

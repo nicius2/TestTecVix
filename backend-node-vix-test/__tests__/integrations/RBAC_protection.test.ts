@@ -7,7 +7,6 @@ const VM_PATH = API_VERSION.V1 + ROOT_PATH.VM;
 const USER_PATH = API_VERSION.V1 + ROOT_PATH.USER;
 
 describe("RBAC Route Protection", () => {
-  
   describe("BrandMaster Routes", () => {
     it("should return 401 for GET /brand-master without token", async () => {
       const res = await request(app).get(BRAND_MASTER_PATH);

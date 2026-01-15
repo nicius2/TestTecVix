@@ -18,24 +18,17 @@ brandMasterRoutes.get(`${BASE_PATH}/self`, async (req, res) => {
   await brandMasterController.getSelf(req, res);
 });
 
-brandMasterRoutes.get(
-  `${BASE_PATH}/:idBrandMaster`,
-  async (req, res) => {
-    await brandMasterController.getById(req, res);
-  },
-);
+brandMasterRoutes.get(`${BASE_PATH}/:idBrandMaster`, async (req, res) => {
+  await brandMasterController.getById(req, res);
+});
 
 brandMasterRoutes.get(`${BASE_PATH}`, async (req, res) => {
   await brandMasterController.listAll(req, res);
 });
 
-brandMasterRoutes.post(
-  `${BASE_PATH}`,
-  isManagerOrIsAdmin,
-  async (req, res) => {
-    await brandMasterController.createNewBrandMaster(req, res);
-  },
-);
+brandMasterRoutes.post(`${BASE_PATH}`, isManagerOrIsAdmin, async (req, res) => {
+  await brandMasterController.createNewBrandMaster(req, res);
+});
 
 brandMasterRoutes.put(
   `${BASE_PATH}/:idBrandMaster`,
