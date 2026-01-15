@@ -3,7 +3,6 @@ import { api } from "../services/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-
 interface IUserRegisterResponse {
   message: string;
 }

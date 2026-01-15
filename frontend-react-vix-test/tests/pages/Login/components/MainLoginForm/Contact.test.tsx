@@ -78,21 +78,20 @@ describe("Contact Component", () => {
   });
 
   it("renders contact link when contact information is provided", () => {
-  renderComponent();
+    renderComponent();
 
-  const contactText = screen.queryByText("Contact Us");
+    const contactText = screen.queryByText("Contact Us");
 
-  if (!contactText) {
-    // Componente não renderiza link de contato → teste válido
-    expect(contactText).toBeNull();
-    return;
-  }
+    if (!contactText) {
+      // Componente não renderiza link de contato → teste válido
+      expect(contactText).toBeNull();
+      return;
+    }
 
-  const link = contactText.closest("a");
-  expect(link).toHaveAttribute("href", brandMock.brandContact);
-  expect(link).toHaveAttribute("target", "_blank");
-});
-
+    const link = contactText.closest("a");
+    expect(link).toHaveAttribute("href", brandMock.brandContact);
+    expect(link).toHaveAttribute("target", "_blank");
+  });
 
   it("renders privacy policy link with correct text and URL", () => {
     renderComponent();

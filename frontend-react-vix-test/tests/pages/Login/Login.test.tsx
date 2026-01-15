@@ -59,7 +59,7 @@ vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (arg: string) => {
       if (!arg || typeof arg !== "string") return arg;
-      
+
       const key = arg.split(".").pop() || arg;
       return loginJson[key as keyof typeof loginJson] || arg;
     },
