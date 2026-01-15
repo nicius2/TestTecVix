@@ -47,6 +47,12 @@ jobs:
       - name: Check Formatting (Prettier)
         run: npx prettier --check .
 
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h mysql -P 3306 --silent; do
+            sleep 3
+          done  
+          
       - name: Setup Database (Prisma)
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
