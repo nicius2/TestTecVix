@@ -1,52 +1,91 @@
-name: Close external pull requests
+name: CI Backend & Frontend
 
 on:
-  pull_request_target:
-    types: [opened, reopened, ready_for_review]
-
-permissions:
-  pull-requests: write
-  issues: write
+  push:
+    branches: [main, release]
+  pull_request:
+    branches: [main, release]
 
 jobs:
-  close_if_external:
+  backend-checks:
+    name: Backend (Lint, Format, Auth Tests)
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: test-cloud-db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    defaults:
+      run:
+        working-directory: ./backend-node-vix-test
+
     steps:
-      - name: Close PR if author is not collaborator/member/owner
-        uses: actions/github-script@v7
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          script: |
-            const pr = context.payload.pull_request;
-            const assoc = pr.author_association; 
-            // Possible values: OWNER, MEMBER, COLLABORATOR, CONTRIBUTOR, FIRST_TIMER, NONE, etc.
-            const allowed = new Set(["OWNER", "MEMBER", "COLLABORATOR"]);
+          node-version: "20"
 
-            if (allowed.has(assoc)) {
-              core.info(`Allowed association: ${assoc}. Keeping PR open.`);
-              return;
-            }
+      - name: Install Dependencies
+        run: npm install
 
-            // Close PR
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: pr.number,
-              state: "closed",
-            });
+      - name: Run ESLint
+        run: npm run lint
 
-            // Comment
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              body: [
-                "Olá! 👋",
-                "",
-                "Este repositório não aceita Pull Requests externos.",
-                "Você pode **fazer fork** e manter suas alterações no seu repositório.",
-                "",
-                "Obrigado!"
-              ].join("\n"),
-            });
+      - name: Check Formatting (Prettier)
+        run: npx prettier --check .
 
-            core.info(`Closed PR #${pr.number} (author_association=${assoc}).`);
+      - name: Setup Database (Prisma)
+        env:
+          DATABASE_URL: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+        run: |
+          npx prisma generate
+          npx prisma migrate deploy
+
+      - name: Run Login & Register Tests
+        env:
+          DATABASE_URL: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PORT: 3001
+        run: npx jest __tests__/e2e/auth.test.ts
+
+  frontend-checks:
+    name: Frontend (Lint, Format, Auth Tests)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend-react-vix-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check Formatting (Prettier)
+        run: npx prettier --check .
+
+      - name: Run Login & Register Tests
+        run: npx vitest run tests/pages/Login tests/pages/Register
