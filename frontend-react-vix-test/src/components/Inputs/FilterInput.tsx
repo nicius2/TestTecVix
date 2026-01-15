@@ -40,7 +40,7 @@ export const FilterInput = ({
       onChange(inputValue);
     }, debounceDelay);
     return () => clearTimeout(timeout);
-  }, [inputValue]);
+  }, [inputValue, debounceDelay, hasDebounce, onChange]);
 
   return (
     <FormControl

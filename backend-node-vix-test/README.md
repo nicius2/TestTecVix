@@ -1,103 +1,197 @@
-# Backend Node Api
+# Backend Node API – Teste Técnico
 
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.com/vituax1/backend-node-api.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.com/vituax1/backend-node-api/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+API desenvolvida em **Node.js com TypeScript** como parte do teste técnico da **Vituax**. O projeto segue boas práticas de arquitetura, validação, versionamento e qualidade de código, com foco em clareza, segurança e testabilidade.
 
 ---
 
-# Editing this README
+## 🚀 Tecnologias Utilizadas
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+- **Node.js** – Ambiente de execução
+- **TypeScript** – Tipagem estática e segurança
+- **Express** – Framework HTTP
+- **Zod** – Validação e tipagem de dados
+- **JWT (JSON Web Token)** – Autenticação
+- **ESLint** – Padronização e análise estática
+- **Prettier** – Formatação de código
+- **Swagger** – Documentação da API
+- **Jest** – Testes unitários e de integração
+- **ts-node-dev** – Ambiente de desenvolvimento
 
-## Suggestions for a good README
+---
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+## 🧱 Arquitetura
 
-## Name
+O projeto adota uma separação clara de responsabilidades:
 
-Choose a self-explaining name for your project.
+- **Controllers** – Camada HTTP (request/response)
+- **Services** – Regras de negócio
+- **Models/Repositories** – Acesso a dados
+- **Schemas (Zod)** – Validação e tipagem de entrada
+- **Middlewares** – Autenticação, erros e validações
 
-## Description
+Essa abordagem facilita manutenção, testes e escalabilidade.
 
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+---
 
-## Badges
+## 🔐 Controle de Acesso (RBAC)
 
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+O sistema implementa controle de acesso baseado em cargos (Role-Based Access Control) para proteger os recursos. As permissões são definidas da seguinte forma:
 
-## Visuals
+- **Member (Membro):** Somente leitura. Acesso apenas a rotas `GET`.
+- **Manager (Gerente):** Pode ler, criar e editar recursos. Acesso a rotas `GET`, `POST` e `PUT`.
+- **Admin (Administrador):** Acesso total. Pode ler, criar, editar e deletar recursos (`GET`, `POST`, `PUT`, `DELETE`).
 
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+> **Nota:** As rotas de autenticação (`/login`, `/register`) são públicas.
 
-## Installation
+### Middleware de Autenticação (`authUser`)
 
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Todas as rotas, **com exceção das rotas de autenticação**, são protegidas pelo middleware `authUser`. Este middleware é responsável por:
 
-## Usage
+1.  Verificar a presença de um token JWT válido no cabeçalho `Authorization`.
+2.  Validar a integridade e autenticidade do token.
+3.  Carregar as informações do usuário (`req.user`) para uso posterior pelos middlewares de permissão (como `isManagerOrIsAdmin`) ou pelos controladores.
 
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+A ausência ou invalidade de um token resultará em erro de acesso não autorizado, garantindo que apenas usuários autenticados possam interagir com os recursos protegidos da API.
 
-## Support
+### Credenciais de Usuários de Teste
 
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Para facilitar testes e desenvolvimento local, utilize as seguintes credenciais:
 
-## Roadmap
+- **Admin:**
+  - **Email:** `admin@vituax.com`
+  - **Senha:** `Admin@123`
 
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+- **Manager:**
+  - **Email:** `manager@vituax.com`
+  - **Senha:** `Manager@123`
 
-## Contributing
+- **Member:**
+  - **Email:** `member@vituax.com`
+  - **Senha:** `Member@123`
 
-State if you are open to contributions and what your requirements are for accepting them.
+---
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+## 🧪 Qualidade de Código
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Para garantir legibilidade, consistência e boas práticas, o projeto utiliza **ESLint** e **Prettier**.
 
-## Authors and acknowledgment
+Antes de abrir um Pull Request, execute:
 
-Show your appreciation to those who have contributed to the project.
+```bash
+npm run lint
+npm run lint:fix
+npm run format
+```
 
-## License
+---
 
-For open source projects, say how it is licensed.
+## 🧪 Testes
 
-## Project status
+O projeto conta com **testes unitários e de integração**, garantindo confiabilidade e segurança da aplicação.
 
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+### Integração Contínua (CI)
+
+O pipeline de CI executa automaticamente os testes a cada push ou Pull Request para garantir que novas alterações não introduzam regressões. Os testes são essenciais para manter a qualidade do código e a estabilidade da aplicação.
+
+### Testes de Autenticação (Login e Register)
+
+Foram implementados testes abrangentes para as funcionalidades de login e registro, cobrindo diferentes níveis:
+
+-   **Testes Unitários:** Validam componentes isolados, como serviços de autenticação, geração de JWT e validação de schemas (Zod).
+    -   Ex: `src/services/AuthService.test.ts`
+-   **Testes de Integração:** Verificam a interação entre múltiplos componentes, como o fluxo completo de registro ou login com o banco de dados e a geração de tokens.
+    -   Ex: `__tests__/integrations/Auth.test.ts` (Should exist, if not, RBAC tests cover some interaction)
+-   **Testes E2E (End-to-End):** Simulam cenários de usuário real através da API, garantindo que o fluxo completo de autenticação funcione como esperado, desde a requisição HTTP até a resposta final.
+    -   Ex: `__tests__/e2e/auth.test.ts`
+
+### Cobertura atual
+
+- ✅ Rotas de CRUD para usuários
+- ✅ Registro de usuário
+- ✅ Autenticação (login)
+- ✅ Geração e validação de JWT
+- ✅ Cenários de sucesso e erro nas rotas
+- ✅ Validação de dados de entrada
+- ✅ Proteção de rotas baseada em cargos (RBAC)
+
+### Executar os testes
+
+```bash
+npm test
+```
+
+### Executar em modo watch
+
+```bash
+npm run test:dev
+```
+
+---
+
+## 📦 Instalação
+
+Instale as dependências do projeto:
+
+```bash
+npm install
+```
+
+---
+
+## ⚙️ Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```env
+PORT=3001
+JWT_SECRET=your_secret_key
+```
+
+---
+
+## 🚀 Executando a Aplicação
+
+### Ambiente de desenvolvimento
+
+```bash
+npm run dev
+```
+
+A API estará disponível em:
+
+```
+http://localhost:3001
+```
+
+---
+
+## 📚 Documentação da API
+
+A documentação interativa está disponível via **Swagger** após iniciar o projeto:
+
+```
+http://localhost:3001/docs
+```
+
+---
+
+## ✅ Padrão de Commits
+
+O projeto segue o padrão **Conventional Commits**, por exemplo:
+
+- `feat: adiciona autenticação jwt`
+- `fix: corrige validação de login`
+- `test: adiciona testes unitários de autenticação`
+- `refactor: melhora estrutura do service de usuários`
+
+---
+
+## 📌 Observações Finais
+
+Este projeto foi desenvolvido com foco em:
+
+- Clareza de código
+- Boas práticas de backend
+- Segurança
+- Testabilidade
+- Manutenibilidade

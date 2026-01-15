@@ -23,11 +23,9 @@ interface IUserLoginResponse {
   };
 }
 
-
 export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { setIsOpenModalUserNotActive, setLoginTime } =
-    useZGlobalVar();
+  const { setIsOpenModalUserNotActive, setLoginTime } = useZGlobalVar();
   const { setUser } = useZUserProfile();
   const { resetAllStates } = useZResetAllStates();
   const navigate = useNavigate();
@@ -37,23 +35,35 @@ export const useLogin = () => {
     password,
     email,
   }: {
-    username: string;
+    username?: string;
     password: string;
-    email: string;
+    email?: string;
   }) => {
     setIsLoading(true);
-    if ((!username && !email) || !password) {
+
+    if (!password) {
       setIsLoading(false);
+      toast.error("Password is required.");
+      return;
+    }
+
+    let loginData: { password: string; username?: string; email?: string };
+
+    if (email && !username) {
+      loginData = { password, email };
+    } else if (username && !email) {
+      loginData = { password, username };
+    } else if (username && email) {
+      loginData = { password, email };
+    } else {
+      setIsLoading(false);
+      toast.error("Email or Username is required.");
       return;
     }
 
     const response = await api.post<IUserLoginResponse>({
-      url: "/user/login",
-      data: {
-        username: username || undefined,
-        password,
-        email: email || undefined,
-      },
+      url: "/auth/login",
+      data: loginData,
       tryRefetch: true,
     });
 
@@ -78,6 +88,7 @@ export const useLogin = () => {
       userPhoneNumber: response.data.user.userPhoneNumber,
     });
     setLoginTime(new Date());
+    navigate("/");
   };
 
   const goLogout = () => {

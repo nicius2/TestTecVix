@@ -62,6 +62,20 @@ describe("RegisterForm Component", () => {
     ).toBeInTheDocument();
   });
 
+  it("allows typing in the username field", () => {
+    setup();
+    const usernameInput = screen.getByLabelText(/loginRegister.username/i);
+    fireEvent.change(usernameInput, { target: { value: "testuser" } });
+    expect(usernameInput).toHaveValue("testuser");
+  });
+
+  it("allows typing in the password field", () => {
+    setup();
+    const passwordInput = screen.getByLabelText(/loginRegister.password/i);
+    fireEvent.change(passwordInput, { target: { value: "securepassword" } });
+    expect(passwordInput).toHaveValue("securepassword");
+  });
+
   it("displays email validation error on blur when email is invalid", () => {
     setup();
 
