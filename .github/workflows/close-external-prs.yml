@@ -15,19 +15,22 @@ jobs:
       mysql:
         image: mysql:8
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: test-cloud-db
-        ports:
-          - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping -u root -ppassword"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
 
     defaults:
       run:
         working-directory: ./backend-node-vix-test
+
+    env:
+      DATABASE_URL: mysql://root:password@mysql:3306/test-cloud-db
+      JWT_SECRET: test_jwt_secret
+      PORT: 3001
 
     steps:
       - name: Checkout code
@@ -38,44 +41,38 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint
 
-      - name: Check Formatting (Prettier)
+      - name: Check formatting (Prettier)
         run: npx prettier --check .
 
       - name: Wait for MySQL
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         run: |
           for i in {1..20}; do
-            if mysqladmin ping -h mysql -P 3306 -u root -p"$MYSQL_ROOT_PASSWORD" --silent; then
+            if mysqladmin ping -h mysql -u root -ppassword --silent; then
               echo "MySQL is ready!"
-              break
+              exit 0
             fi
             echo "Waiting for MySQL..."
             sleep 3
           done
+          echo "MySQL did not become ready in time"
+          exit 1
 
-      - name: Setup Database (Prisma)
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Setup database (Prisma)
         run: |
           npx prisma generate
           npx prisma migrate deploy
 
-      - name: Run Login & Register Tests
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          PORT: 3001
-        run: npx jest __tests__/e2e/auth.test.ts
+      - name: Run backend tests
+        run: npx jest
 
   frontend-checks:
-    name: Frontend (Lint, Format, Auth Tests)
+    name: Frontend (Lint, Format, Tests)
     runs-on: ubuntu-latest
 
     defaults:
@@ -91,14 +88,14 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint
 
-      - name: Check Formatting (Prettier)
+      - name: Check formatting (Prettier)
         run: npx prettier --check .
 
-      - name: Run Login & Register Tests
-        run: npx vitest run tests/pages/Login tests/pages/Register
+      - name: Run frontend tests
+        run: npx vitest run
