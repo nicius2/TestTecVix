@@ -89,6 +89,21 @@ npm run format
 
 O projeto conta com **testes unitários e de integração**, garantindo confiabilidade e segurança da aplicação.
 
+### Integração Contínua (CI)
+
+O pipeline de CI executa automaticamente os testes a cada push ou Pull Request para garantir que novas alterações não introduzam regressões. Os testes são essenciais para manter a qualidade do código e a estabilidade da aplicação.
+
+### Testes de Autenticação (Login e Register)
+
+Foram implementados testes abrangentes para as funcionalidades de login e registro, cobrindo diferentes níveis:
+
+-   **Testes Unitários:** Validam componentes isolados, como serviços de autenticação, geração de JWT e validação de schemas (Zod).
+    -   Ex: `src/services/AuthService.test.ts`
+-   **Testes de Integração:** Verificam a interação entre múltiplos componentes, como o fluxo completo de registro ou login com o banco de dados e a geração de tokens.
+    -   Ex: `__tests__/integrations/Auth.test.ts` (Should exist, if not, RBAC tests cover some interaction)
+-   **Testes E2E (End-to-End):** Simulam cenários de usuário real através da API, garantindo que o fluxo completo de autenticação funcione como esperado, desde a requisição HTTP até a resposta final.
+    -   Ex: `__tests__/e2e/auth.test.ts`
+
 ### Cobertura atual
 
 - ✅ Rotas de CRUD para usuários

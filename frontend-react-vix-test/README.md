@@ -144,3 +144,103 @@ Para parar:
 ```bash
 docker compose down
 ```
+
+## Documentação de CI e Testes
+
+### Integração Contínua (CI)
+
+O projeto utiliza o GitLab CI para automação de build, testes e deploy. A configuração está definida no arquivo `.gitlab-ci.yml`.
+
+#### Estrutura do Pipeline
+
+O pipeline está dividido nos seguintes estágios:
+1.  **build**: Instalação de dependências e compilação do projeto.
+2.  **test**: Execução dos testes automatizados e verificação de cobertura de código.
+3.  **deploy**: Implantação da aplicação em ambientes específicos (staging/produção).
+
+#### Jobs e Branches
+
+| Branch Trigger (Regex) | Jobs Executados | Descrição |
+| :--- | :--- | :--- |
+| `feature/*` | `build_feature`, `test_feature` | Pipelines para desenvolvimento de novas funcionalidades. Executa build e testes com cobertura. |
+| `sprint-ref/*` | `build_sprint`, `test_sprint`, `deploy_staging` | Pipelines para branches de sprint. Inclui deploy para o ambiente de **staging**. |
+| `hotfix/*` | `build_hotfix`, `test_hotfix` | Pipelines para correções urgentes. Executa build e testes. |
+| `project-ref/*b` | `build_project_hotfix`, `test_project_hotfix` | Pipelines para correções de projeto específicas. Executa build e testes. |
+| `main` | `deploy_main_after_hotfix` | Pipeline executado na branch principal para deploy em **produção** após hotfix. |
+
+#### Configuração dos Jobs de Teste
+
+Todos os jobs de teste (`test_feature`, `test_sprint`, etc.) compartilham a seguinte configuração base:
+-   **Imagem Docker**: `node:16`
+-   **Script**:
+    ```bash
+    npm install
+    npm run test:coverage
+    ```
+-   **Regex de Cobertura**: Captura a porcentagem de cobertura da saída do console (`/All files[^|]*\|[^|]*\s+([\d\.]+)%/`).
+
+---
+
+### Testes Automatizados (Login e Register)
+
+Os testes foram implementados utilizando **Vitest** e **React Testing Library**. Eles cobrem renderização, snapshots e lógicas de interação de formulário.
+
+#### Estrutura de Testes
+
+Os testes estão localizados no diretório `tests/` e espelham a estrutura de `src/`.
+
+#### 1. Testes de Login
+
+**Arquivo:** `tests/pages/Login/Login.test.tsx`
+*   **Tipo**: Teste de Unidade / Snapshot.
+*   **Cobertura**:
+    *   Verifica se a página renderiza sem erros (`should render without crashing`).
+    *   Verifica se a estrutura visual permanece consistente (`should match snapshot`).
+*   **Mocks**:
+    *   `useZTheme`: Simula o tema da aplicação.
+    *   `react-router-dom`: Simula `Link`, `useNavigate` e `useLocation`.
+    *   `react-i18next`: Simula traduções (`t`, `i18n`, `Trans`).
+
+**Arquivo:** `tests/pages/Login/components/MainLoginForm/MainLoginForm.test.tsx`
+*   **Tipo**: Teste de Componente (Unidade).
+*   **Cobertura**:
+    *   Verifica a interatividade do checkbox "Manter conectado".
+    *   Testa o toggle de estado (checked/unchecked) ao clicar.
+*   **Mocks**: `useZTheme`, `react-i18next`.
+
+#### 2. Testes de Registro (Register)
+
+**Arquivo:** `tests/pages/Register/Register.test.tsx`
+*   **Tipo**: Teste de Unidade / Snapshot.
+*   **Cobertura**:
+    *   Verifica a consistência visual da página de registro (`should match snapshot`).
+*   **Mocks**:
+    *   `useZTheme`: Simula o tema.
+    *   `react-router-dom`: Simula componentes de navegação.
+    *   `react-i18next`: Simula traduções.
+
+**Arquivo:** `tests/pages/Register/components/MainRegisterForm/RegisterForm.test.tsx`
+*   **Tipo**: Teste de Integração (Lógica de Formulário).
+*   **Cobertura**:
+    *   **Renderização**: Verifica se todos os campos (usuário, email, senha, confirmar senha) estão presentes.
+    *   **Interação**: Verifica se é possível digitar nos campos de usuário e senha.
+    *   **Validação de Email**:
+        *   Exibe erro para email inválido no evento `blur`.
+        *   Garante que o erro não aparece para email válido.
+    *   **Validação de Senha**:
+        *   Exibe erro quando as senhas não coincidem (mismatch) no evento `blur`.
+        *   Não exibe erro quando as senhas são idênticas.
+*   **Mocks**: `useZTheme`, `react-i18next`.
+
+#### Como Executar os Testes Localmente
+
+Para rodar os testes em sua máquina:
+
+```bash
+# Rodar todos os testes
+npm run test
+
+# Rodar com relatório de cobertura
+npm run test:coverage
+```
+
