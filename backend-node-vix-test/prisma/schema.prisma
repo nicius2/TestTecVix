@@ -54,6 +54,7 @@ model brandMaster {
 model vM {
   idVM          Int          @id @default(autoincrement())
   vmName        String?
+  pass          String
   vCPU          Int
   ram           Int
   disk          Int

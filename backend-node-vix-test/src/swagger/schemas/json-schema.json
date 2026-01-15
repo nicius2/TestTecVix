@@ -214,6 +214,9 @@
             "null"
           ]
         },
+        "pass": {
+          "type": "string"
+        },
         "vCPU": {
           "type": "integer"
         },
