@@ -23,6 +23,10 @@ vMRoutes.get(`${BASE_PATH}/:idVM`, async (req, res) => {
   await vMController.getById(req, res);
 });
 
+vMRoutes.get(`${BASE_PATH}/:idVM/usage`, async (req, res) => {
+  await vMController.getVMUsage(req, res);
+});
+
 // ========= POSTs =========
 vMRoutes.post(BASE_PATH, isManagerOrIsAdmin, async (req, res) => {
   await vMController.createVM(req, res);
