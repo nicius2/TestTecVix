@@ -26,6 +26,7 @@ import { TextRob14Font1Xs } from "../../../../components/Text1Xs";
 import { TerminalIcon } from "../../../../icons/TerminalIcon";
 import { MonitorIcon } from "../../../../icons/MonitorIcon";
 import { IVMTask, taskMock } from "../../../../types/VMTypes";
+import { useZUserProfile } from "../../../../stores/useZUserProfile";
 
 export interface IVmCardProps {
   vmId: number;
@@ -74,6 +75,9 @@ export const VmCard = ({
     setCurrentVMName,
   } = useZGlobalVar();
 
+  const { role } = useZUserProfile();
+  const isMember = role === "member";
+
   const {
     updateNameVm,
     updateDiskSizeVm,
@@ -118,12 +122,14 @@ export const VmCard = ({
   };
 
   const handlePaused = () => {
+    if (isMember) return;
     setStatusState("PAUSED");
     if (checkStatus(statusState, taskState?.action).isRunning)
       setShowConfirmation(true);
   };
 
   const handleStart = () => {
+    if (isMember) return;
     setStatusState("RUNNING");
     if (!checkStatus(statusState, taskState?.action).isRunning)
       setShowConfirmation(true);
@@ -195,21 +201,23 @@ export const VmCard = ({
           >
             {vmNameState}
           </TextRob20Font1MC>
-          <IconButton
-            onClick={() => setOpenModal(true)}
-            sx={{
-              backgroundColor: theme[mode].blue,
-              padding: "2px",
-              width: "20px",
-              height: "20px",
-              "&:hover": {
+          {!isMember && (
+            <IconButton
+              onClick={() => setOpenModal(true)}
+              sx={{
                 backgroundColor: theme[mode].blue,
-                opacity: 0.8,
-              },
-            }}
-          >
-            <PencilIcon fill={"#FFFFFF"} />
-          </IconButton>
+                padding: "2px",
+                width: "20px",
+                height: "20px",
+                "&:hover": {
+                  backgroundColor: theme[mode].blue,
+                  opacity: 0.8,
+                },
+              }}
+            >
+              <PencilIcon fill={"#FFFFFF"} />
+            </IconButton>
+          )}
         </Stack>
         {/* Status */}
         <Stack mt={"12px"}>
@@ -230,7 +238,7 @@ export const VmCard = ({
         >
           {/* Start */}
           <Btn
-            disabled={checkStatus(statusState, taskState?.action).isWaiting}
+            disabled={checkStatus(statusState, taskState?.action).isWaiting || isMember}
             onClick={handleStart}
             className="w-full"
             sx={{
@@ -243,6 +251,10 @@ export const VmCard = ({
                   ? "1px solid"
                   : "0px solid",
               borderColor: actionExec ? theme[mode].blue : theme[mode].tertiary,
+              ...(isMember && {
+                opacity: 0.5,
+                cursor: "not-allowed",
+              }),
             }}
           >
             <TextRob12Font2Xs
@@ -258,7 +270,7 @@ export const VmCard = ({
           </Btn>
           {/* Pause */}
           <Btn
-            disabled={checkStatus(statusState, taskState?.action).isWaiting}
+            disabled={checkStatus(statusState, taskState?.action).isWaiting || isMember}
             onClick={handlePaused}
             className="w-full"
             sx={{
@@ -273,6 +285,10 @@ export const VmCard = ({
               borderColor: actionPause
                 ? theme[mode].blueMedium
                 : theme[mode].tertiary,
+               ...(isMember && {
+                opacity: 0.5,
+                cursor: "not-allowed",
+              }),
             }}
           >
             <TextRob12Font2Xs
@@ -392,31 +408,53 @@ export const VmCard = ({
             >
               {t("home.disk")}
             </TextRob16FontL>
-            <IconButton
-              onClick={() => setOpenModalSlider(true)}
-              sx={{
-                backgroundColor: theme[mode].grayLight,
-                flexDirection: "row",
-                padding: "0px 4px",
-                borderRadius: "4px",
-                marginRight: "-4px",
-                gap: "6px",
-                "&:hover": {
-                  backgroundColor: theme[mode].grayLight,
-                  opacity: 0.8,
-                },
-              }}
-            >
-              <PencilIcon fill={theme[mode].primary} />
-              <TextRob16FontL
+            {!isMember ? (
+              <IconButton
+                onClick={() => setOpenModalSlider(true)}
                 sx={{
-                  fontWeight: "500",
-                  color: theme[mode].primary,
+                  backgroundColor: theme[mode].grayLight,
+                  flexDirection: "row",
+                  padding: "0px 4px",
+                  borderRadius: "4px",
+                  marginRight: "-4px",
+                  gap: "6px",
+                  "&:hover": {
+                    backgroundColor: theme[mode].grayLight,
+                    opacity: 0.8,
+                  },
                 }}
               >
-                {diskState}GB
-              </TextRob16FontL>
-            </IconButton>
+                <PencilIcon fill={theme[mode].primary} />
+                <TextRob16FontL
+                  sx={{
+                    fontWeight: "500",
+                    color: theme[mode].primary,
+                  }}
+                >
+                  {diskState}GB
+                </TextRob16FontL>
+              </IconButton>
+            ) : (
+              <Stack
+                 sx={{
+                  backgroundColor: "transparent",
+                  flexDirection: "row",
+                  padding: "0px 4px",
+                  borderRadius: "4px",
+                  marginRight: "-4px",
+                  gap: "6px",
+                }}
+              >
+                 <TextRob16FontL
+                  sx={{
+                    fontWeight: "500",
+                    color: theme[mode].primary,
+                  }}
+                >
+                  {diskState}GB
+                </TextRob16FontL>
+              </Stack>
+            )}
           </Stack>
           <Divider
             sx={{

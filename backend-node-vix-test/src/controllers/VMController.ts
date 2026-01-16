@@ -33,6 +33,13 @@ export class VMController {
     return res.status(STATUS_CODE.OK).json(result);
   }
 
+  async startVM(req: CustomRequest<unknown>, res: Response) {
+    const { idVM } = req.params;
+    const user = req.user as user;
+    const result = await this.vMService.startVM(Number(idVM), user);
+    return res.status(STATUS_CODE.OK).json(result);
+  }
+
   async deleteVM(req: CustomRequest<unknown>, res: Response) {
     const { idVM } = req.params;
     const user = req.user as user;

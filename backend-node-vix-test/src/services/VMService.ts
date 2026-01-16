@@ -16,10 +16,23 @@ export class VMService {
     return this.vMModel.getById(idVM);
   }
 
-  async listAll(query: unknown, _user: user) {
+  async listAll(query: unknown, user: user) {
     const validQuery = vmListAllSchema.parse(query);
+    
+    // If user is admin, allow them to query any brand or all (if they don't specify)
+    // If user is member/manager, RESTRICT to their idBrandMaster
+    
+    let filterBrandId: number | undefined | null = undefined;
+    
+    if (user.role === 'admin') {
+         filterBrandId = validQuery.idBrandMaster as number | null | undefined; 
+    } else {
+         filterBrandId = user.idBrandMaster;
+    }
+
     return this.vMModel.listAll({
       query: validQuery,
+      idBrandMaster: filterBrandId || undefined
     });
   }
 
@@ -43,6 +56,17 @@ export class VMService {
     }
 
     const updatedVM = await this.vMModel.updateVM(idVM, validateDataSchema);
+    return updatedVM;
+  }
+
+  async startVM(idVM: number, _user: user) {
+    const oldVM = await this.getById(idVM);
+
+    if (!oldVM) {
+      throw new AppError(ERROR_MESSAGE.NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+
+    const updatedVM = await this.vMModel.updateStatus(idVM, "RUNNING");
     return updatedVM;
   }
 

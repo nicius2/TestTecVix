@@ -28,6 +28,14 @@ vMRoutes.post(BASE_PATH, isManagerOrIsAdmin, async (req, res) => {
   await vMController.createVM(req, res);
 });
 
+vMRoutes.post(
+  `${BASE_PATH}/:idVM/start`,
+  isManagerOrIsAdmin,
+  async (req, res) => {
+    await vMController.startVM(req, res);
+  },
+);
+
 // ======== PUTs =========
 
 vMRoutes.put(

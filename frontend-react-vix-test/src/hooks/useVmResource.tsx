@@ -201,6 +201,25 @@ export const useVmResource = () => {
     return response.data;
   };
 
+  const startVM = async (idVM: number) => {
+    if (role === "member") {
+      toast.error(t("generic.readOnlyError"));
+      return null;
+    }
+    const auth = await getAuth();
+    const response = await api.post<IVMCreatedResponse>({
+      url: `/vm/${idVM}/start`,
+      auth,
+    });
+    if (response.error) {
+      toast.error(response.message);
+      return null;
+    }
+
+    toast.success(t("alerts.vmStartedSuccess"));
+    return response.data;
+  };
+
   const updateDiskSizeVm = async ({
     idVM,
     disk,

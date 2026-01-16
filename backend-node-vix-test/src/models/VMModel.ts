@@ -86,6 +86,13 @@ export class VMModel {
     });
   }
 
+  async updateStatus(idVM: number, status: "RUNNING" | "STOPPED" | "PAUSED") {
+    return await prisma.vM.update({
+      where: { idVM },
+      data: { status, updatedAt: new Date() },
+    });
+  }
+
   async deleteVM(idVM: number) {
     return await prisma.vM.update({
       where: { idVM },
