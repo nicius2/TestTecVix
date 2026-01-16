@@ -47,16 +47,30 @@ jobs:
       - name: Check Formatting (Prettier)
         run: npx prettier --check .
 
+      - name: Wait for MySQL
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+        run: |
+          for i in {1..20}; do
+            if mysqladmin ping -h 127.0.0.1 -P 3306 -u root -p"$MYSQL_ROOT_PASSWORD" --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 3
+          done
+
       - name: Setup Database (Prisma)
         env:
-          DATABASE_URL: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          # Use 127.0.0.1 because the service port is mapped to the host
+          DATABASE_URL: mysql://root:${{ secrets.MYSQL_ROOT_PASSWORD }}@127.0.0.1:3306/test-cloud-db
         run: |
           npx prisma generate
           npx prisma migrate deploy
 
       - name: Run Login & Register Tests
         env:
-          DATABASE_URL: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          DATABASE_URL: mysql://root:${{ secrets.MYSQL_ROOT_PASSWORD }}@127.0.0.1:3306/test-cloud-db
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           PORT: 3001
         run: npx jest __tests__/e2e/auth.test.ts
