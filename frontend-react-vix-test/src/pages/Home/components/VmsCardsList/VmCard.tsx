@@ -115,7 +115,10 @@ export const VmCard = ({
     if (statusState !== preStatusState) {
       setPreStatusState(statusState);
       // Call API to update status
-      await updateVMStatus({ idVM: vmId, status: statusState as "RUNNING" | "STOPPED" | "PAUSED" });
+      await updateVMStatus({
+        idVM: vmId,
+        status: statusState as "RUNNING" | "STOPPED" | "PAUSED",
+      });
       await getVMById();
     }
     setShowConfirmation(false);
@@ -238,7 +241,9 @@ export const VmCard = ({
         >
           {/* Start */}
           <Btn
-            disabled={checkStatus(statusState, taskState?.action).isWaiting || isMember}
+            disabled={
+              checkStatus(statusState, taskState?.action).isWaiting || isMember
+            }
             onClick={handleStart}
             className="w-full"
             sx={{
@@ -270,7 +275,9 @@ export const VmCard = ({
           </Btn>
           {/* Pause */}
           <Btn
-            disabled={checkStatus(statusState, taskState?.action).isWaiting || isMember}
+            disabled={
+              checkStatus(statusState, taskState?.action).isWaiting || isMember
+            }
             onClick={handlePaused}
             className="w-full"
             sx={{
@@ -285,7 +292,7 @@ export const VmCard = ({
               borderColor: actionPause
                 ? theme[mode].blueMedium
                 : theme[mode].tertiary,
-               ...(isMember && {
+              ...(isMember && {
                 opacity: 0.5,
                 cursor: "not-allowed",
               }),
@@ -436,7 +443,7 @@ export const VmCard = ({
               </IconButton>
             ) : (
               <Stack
-                 sx={{
+                sx={{
                   backgroundColor: "transparent",
                   flexDirection: "row",
                   padding: "0px 4px",
@@ -445,7 +452,7 @@ export const VmCard = ({
                   gap: "6px",
                 }}
               >
-                 <TextRob16FontL
+                <TextRob16FontL
                   sx={{
                     fontWeight: "500",
                     color: theme[mode].primary,

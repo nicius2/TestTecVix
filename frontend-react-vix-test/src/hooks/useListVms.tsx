@@ -44,11 +44,15 @@ export const useListVms = () => {
     });
 
     setIsLoading(false);
-    
+
     // Fallback to mock data if error OR empty result (for visualization purposes)
-    if (response.error || (response.data?.result && response.data.result.length === 0)) {
-      if (response.error && !response.message.includes("expired")) toast.error(response.message);
-      
+    if (
+      response.error ||
+      (response.data?.result && response.data.result.length === 0)
+    ) {
+      if (response.error && !response.message.includes("expired"))
+        toast.error(response.message);
+
       const mockVms: IVMCreatedResponse[] = [
         {
           idVM: 1,
@@ -101,11 +105,11 @@ export const useListVms = () => {
       setVmList(mockVms);
       setVmTotalCount(mockVms.length);
       setTotalCountVMs(mockVms.length);
-      
+
       if (!currentIdVM && mockVms.length) {
-          setCurrentIdVM(mockVms[0].idVM);
-          setCurrentVMName(mockVms[0].vmName);
-          setCurrentVMOS(mockVms[0].os);
+        setCurrentIdVM(mockVms[0].idVM);
+        setCurrentVMName(mockVms[0].vmName);
+        setCurrentVMOS(mockVms[0].os);
       }
       return;
     }
