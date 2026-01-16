@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "../database/client";
 import { TVMCreate } from "../types/validations/VM/createVM";
 import { TVMUpdate } from "../types/validations/VM/updateVM";
@@ -74,7 +75,7 @@ export class VMModel {
 
   async createNewVM(data: TVMCreate) {
     return await prisma.vM.create({
-      data: { ...data },
+      data: data as Prisma.vMUncheckedCreateInput,
     });
   }
 
