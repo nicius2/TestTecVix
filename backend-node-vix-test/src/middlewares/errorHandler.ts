@@ -28,5 +28,16 @@ export const errorHandler = (
   if (err instanceof PrismaClientKnownRequestError) {
     return res.status(400).json(err);
   }
-  return res.status(err?.status || 500).json(err);
+
+  // Fallback for unknown errors (500)
+  const status = (err as any).status || 500;
+  const message = (err as any).message || "Internal Server Error";
+  console.error("Global Error Handler:", err); // Ensure it's logged on server too
+
+  return res.status(status).json({
+    status,
+    message,
+    stack: process.env.NODE_ENV === "development" ? (err as any).stack : undefined,
+    raw: err,
+  });
 };
