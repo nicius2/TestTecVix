@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "../database/client";
 import { TVMCreate } from "../types/validations/VM/createVM";
 import { TVMUpdate } from "../types/validations/VM/updateVM";
@@ -74,7 +75,7 @@ export class VMModel {
 
   async createNewVM(data: TVMCreate) {
     return await prisma.vM.create({
-      data: { ...data },
+      data: data as Prisma.vMUncheckedCreateInput,
     });
   }
 
@@ -82,6 +83,13 @@ export class VMModel {
     return await prisma.vM.update({
       where: { idVM },
       data: { ...data, updatedAt: new Date() },
+    });
+  }
+
+  async updateStatus(idVM: number, status: "RUNNING" | "STOPPED" | "PAUSED") {
+    return await prisma.vM.update({
+      where: { idVM },
+      data: { status, updatedAt: new Date() },
     });
   }
 

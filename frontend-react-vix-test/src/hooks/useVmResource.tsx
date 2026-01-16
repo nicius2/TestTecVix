@@ -125,6 +125,11 @@ export const useVmResource = () => {
 
   const createVm = async (vm: IVMResource) => {
     setIsLoadingCreateVM(true);
+    if (role === "member") {
+      toast.error(t("generic.readOnlyError"));
+      setIsLoadingCreateVM(false);
+      return;
+    }
 
     const auth = await getAuth();
     const response = await api.post<IVMCreatedResponse>({
@@ -152,6 +157,10 @@ export const useVmResource = () => {
     idVM: number;
     vmName: string;
   }) => {
+    if (role === "member") {
+      toast.error(t("generic.readOnlyError"));
+      return;
+    }
     const auth = await getAuth();
     const response = await api.put<IVMCreatedResponse>({
       url: `/vm/${idVM}`,
@@ -174,6 +183,10 @@ export const useVmResource = () => {
     idVM: number;
     status: "RUNNING" | "STOPPED" | "PAUSED";
   }) => {
+    if (role === "member") {
+      toast.error(t("generic.readOnlyError"));
+      return null;
+    }
     const auth = await getAuth();
     const response = await api.put<IVMCreatedResponse>({
       url: `/vm/${idVM}`,
@@ -188,6 +201,25 @@ export const useVmResource = () => {
     return response.data;
   };
 
+  const startVM = async (idVM: number) => {
+    if (role === "member") {
+      toast.error(t("generic.readOnlyError"));
+      return null;
+    }
+    const auth = await getAuth();
+    const response = await api.post<IVMCreatedResponse>({
+      url: `/vm/${idVM}/start`,
+      auth,
+    });
+    if (response.error) {
+      toast.error(response.message);
+      return null;
+    }
+
+    toast.success(t("alerts.vmStartedSuccess"));
+    return response.data;
+  };
+
   const updateDiskSizeVm = async ({
     idVM,
     disk,
@@ -195,6 +227,10 @@ export const useVmResource = () => {
     idVM: number;
     disk: number;
   }) => {
+    if (role === "member") {
+      toast.error(t("generic.readOnlyError"));
+      return;
+    }
     const auth = await getAuth();
     const response = await api.put<IVMCreatedResponse>({
       url: `/vm/${idVM}`,
@@ -229,6 +265,10 @@ export const useVmResource = () => {
   };
 
   const updateVM = async (vm: IVMResource, idVM: number) => {
+    if (role === "member") {
+      toast.error(t("generic.readOnlyError"));
+      return;
+    }
     const auth = await getAuth();
     setIsLoadingUpdateVM(true);
     const [response] = await Promise.all([

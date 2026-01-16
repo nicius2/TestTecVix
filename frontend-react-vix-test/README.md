@@ -17,6 +17,20 @@
 
 ## Funcionalidades Implementadas
 
+### Gerenciamento de VMs na Home Page
+
+A Home Page agora inclui cards de máquinas virtuais (VMs) com funcionalidades aprimoradas para gerenciamento direto:
+
+- **Gerenciamento de Status da VM:** Inicie (`start`), pause (`pause`) ou pare suas VMs diretamente do card, com uma etapa de confirmação para evitar ações acidentais.
+- **Edição de Nome da VM:** Renomeie suas VMs através de um modal acessível pelo card.
+- **Ajuste de Tamanho de Disco da VM:** Modifique o tamanho do disco das suas VMs usando um slider e um aviso de confirmação.
+- **Controle de Acesso Baseado em Função (RBAC):** As ações de gerenciamento de VM (alteração de status, edição de nome e ajuste de disco) são desativadas para usuários com o perfil de "membro", sendo restritas a perfis com privilégios mais altos (ex: administrador).
+- **Exibição Aprimorada de Informações da VM:** Cada card de VM exibe detalhes essenciais como Nome da VM, Status, CPU, Memória, Disco, Sistema Operacional e Proprietário.
+- **Atualizações de Status em Tempo Real e Monitoramento de Tarefas:** Os cards exibem o status em tempo real e informações sobre tarefas pendentes (ex: operações de desligamento ou inicialização), fornecendo feedback imediato ao usuário.
+- **Integração com Hooks de Recurso de VM:** As funcionalidades utilizam `useVmResource` para interações com a API (atualização de nome, tamanho de disco e status da VM) e `useListVms` para buscar e gerenciar a lista de VMs.
+- **Indicadores Visuais de Estado da VM:** O status é claramente indicado, e os botões de ação refletem dinamicamente o estado atual da VM e quaisquer tarefas pendentes.
+- **Links para Métricas e Gerenciamento de VM:** Botões para "Show Graph" (Mostrar Gráfico), "Terminal" e "Monitor" estão disponíveis, conectando a interfaces detalhadas de métricas e gerenciamento para as VMs. Os gráficos de **Uso de CPU** e **Uso de Memória** são apresentados com dados mocados.
+
 ### Autenticação
 
 - **Login (`useLogin` hook):**
