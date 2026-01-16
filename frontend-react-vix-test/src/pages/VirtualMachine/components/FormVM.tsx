@@ -225,7 +225,7 @@ export const FormVM = () => {
             value={vmLocalization}
             onChange={setVmLocalization}
           />
-          <BTNISOsSection vmNameLabel={vmSO?.label} />
+          <BTNISOsSection />
         </Stack>
         {/* Sliders */}
         <Stack
