@@ -61,6 +61,7 @@ export const FormVM = () => {
     vCPU: sugestionVCPU,
     ram: sugestionRAM,
     disk: sugestionDisk,
+    vmName: sugestionVmName,
     resetAll,
   } = useZVMSugestion();
 
@@ -122,6 +123,7 @@ export const FormVM = () => {
     !vmNetwork;
 
   useEffect(() => {
+    if (sugestionVmName) setVmName(sugestionVmName);
     if (sugestionOS)
       setVmSO({
         label: sugestionOS,
@@ -130,7 +132,13 @@ export const FormVM = () => {
     if (sugestionVCPU) setVmvCpu(sugestionVCPU);
     if (sugestionRAM) setVmMemory(sugestionRAM);
     if (sugestionDisk) setVmDisk(sugestionDisk);
-  }, [sugestionOS, sugestionVCPU, sugestionRAM, sugestionDisk]);
+  }, [
+    sugestionOS,
+    sugestionVCPU,
+    sugestionRAM,
+    sugestionDisk,
+    sugestionVmName,
+  ]);
 
   useEffect(() => {
     if (!vmNetwork) {

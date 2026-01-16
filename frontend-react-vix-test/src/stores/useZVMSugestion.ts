@@ -23,6 +23,7 @@ export enum EOS {
   notFound = "",
 }
 export interface IVMSugestion {
+  vmName: string | null;
   os: EOS | null;
   vCPU: number | null;
   ram: number | null;
@@ -30,6 +31,7 @@ export interface IVMSugestion {
 }
 
 const INIT_STATE: IVMSugestion = {
+  vmName: null,
   os: null,
   vCPU: null,
   ram: null,
