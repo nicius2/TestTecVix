@@ -75,6 +75,13 @@ jobs:
           PORT: 3001
         run: npx jest __tests__/e2e/auth.test.ts
 
+      - name: Run VM Tests
+        env:
+          DATABASE_URL: mysql://root:${{ secrets.MYSQL_ROOT_PASSWORD }}@127.0.0.1:3306/test-cloud-db
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PORT: 3001
+        run: npx jest __tests__/integrations/VM.test.ts __tests__/models/VMModel.test.ts
+
   frontend-checks:
     name: Frontend (Lint, Format, Auth Tests)
     runs-on: ubuntu-latest

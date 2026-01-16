@@ -36,11 +36,14 @@ export class VMService {
     });
   }
 
-  async createNewVM(data: unknown, _user: user) {
+  async createNewVM(data: unknown, user: user) {
+    console.log("VMService.createNewVM input:", JSON.stringify(data, null, 2));
+    console.log("VMService.createNewVM user:", JSON.stringify(user, null, 2));
     const validateData = vMCreatedSchema.parse(data);
 
     const createdVM = await this.vMModel.createNewVM({
       ...validateData,
+      idBrandMaster: validateData.idBrandMaster || user.idBrandMaster,
       status: "RUNNING",
     });
 

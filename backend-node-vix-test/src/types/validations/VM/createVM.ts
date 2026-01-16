@@ -13,7 +13,7 @@ export const passwordRegex = {
 };
 
 export const vMCreatedSchema = z.object({
-  vmName: z.string().optional(),
+  vmName: z.string().nullable().optional(),
   pass: z.string().min(1, "Password is required"),
   location: ETaskLocation.optional(),
   vCPU: z.number().min(1, "vCPU must be at least 1"),

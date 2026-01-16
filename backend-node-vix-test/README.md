@@ -93,9 +93,12 @@ O projeto conta com **testes unitários e de integração**, garantindo confiabi
 
 O pipeline de CI executa automaticamente os testes a cada push ou Pull Request para garantir que novas alterações não introduzam regressões. Os testes são essenciais para manter a qualidade do código e a estabilidade da aplicação.
 
-### Testes de Autenticação (Login e Register)
+### Testes de Máquinas Virtuais (VMs)
 
-Foram implementados testes abrangentes para as funcionalidades de login e registro, cobrindo diferentes níveis:
+Testes abrangentes foram implementados para as operações CRUD (Create, Read, Update, Delete) de Máquinas Virtuais (VMs). Estes testes garantem a correta funcionalidade e a proteção de acesso aos recursos de VM.
+
+- **Testes de Integração:** Verificam a interação entre múltiplos componentes para as operações de VM, incluindo a correta manipulação de dados e a aplicação de regras de negócio.
+  - Ex: `__tests__/integrations/VM.test.ts`
 
 - **Testes Unitários:** Validam componentes isolados, como serviços de autenticação, geração de JWT e validação de schemas (Zod).
   - Ex: `src/services/AuthService.test.ts`
@@ -107,6 +110,7 @@ Foram implementados testes abrangentes para as funcionalidades de login e regist
 ### Cobertura atual
 
 - ✅ Rotas de CRUD para usuários
+- ✅ Rotas de CRUD para Máquinas Virtuais (VMs)
 - ✅ Registro de usuário
 - ✅ Autenticação (login)
 - ✅ Geração e validação de JWT

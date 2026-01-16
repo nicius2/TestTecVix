@@ -74,8 +74,14 @@ export class VMModel {
   }
 
   async createNewVM(data: TVMCreate) {
+    console.log("VMModel.createNewVM data:", JSON.stringify(data, null, 2));
+    const dataToCreate: Prisma.vMUncheckedCreateInput = {
+      ...data,
+      // No explicit casting needed, Prisma handles string literal enum values
+    } as Prisma.vMUncheckedCreateInput;
+
     return await prisma.vM.create({
-      data: data as Prisma.vMUncheckedCreateInput,
+      data: dataToCreate,
     });
   }
 

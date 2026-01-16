@@ -16,8 +16,10 @@ import {
 import { EOS } from "../stores/useZVMSugestion";
 
 enum ETaskLocation {
-  bre_barueri = "bre_barueri",
-  usa_miami = "usa_miami",
+  AZURE = "AZURE",
+  AWS = "AWS",
+  GCP = "GCP",
+  LOCAL = "LOCAL",
 }
 
 export const useVmResource = () => {
@@ -75,12 +77,20 @@ export const useVmResource = () => {
 
   const localizationOptions: { value: ETaskLocation; label: string }[] = [
     {
-      value: ETaskLocation.usa_miami,
-      label: t("createVm.usaMiami"),
+      value: ETaskLocation.AWS,
+      label: `${t("createVm.usaMiami")} (AWS)`,
     },
     {
-      value: ETaskLocation.bre_barueri,
-      label: t("createVm.brSaoPaulo"),
+      value: ETaskLocation.LOCAL,
+      label: `${t("createVm.brSaoPaulo")} (Local)`,
+    },
+    {
+      value: ETaskLocation.AZURE,
+      label: "Azure",
+    },
+    {
+      value: ETaskLocation.GCP,
+      label: "Google Cloud",
     },
   ];
 

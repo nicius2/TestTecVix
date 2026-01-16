@@ -31,6 +31,18 @@ A Home Page agora inclui cards de máquinas virtuais (VMs) com funcionalidades a
 - **Indicadores Visuais de Estado da VM:** O status é claramente indicado, e os botões de ação refletem dinamicamente o estado atual da VM e quaisquer tarefas pendentes.
 - **Links para Métricas e Gerenciamento de VM:** Botões para "Show Graph" (Mostrar Gráfico), "Terminal" e "Monitor" estão disponíveis, conectando a interfaces detalhadas de métricas e gerenciamento para as VMs. Os gráficos de **Uso de CPU** e **Uso de Memória** são apresentados com dados mocados.
 
+- **Criação de VM**
+  - Formulário para criação de novas VMs com validação front-end.
+  - **Validação Backend:** Envia requisição `POST` para `/vms` com dados do formulário.
+  - **Feedback:** Exibe mensagens de sucesso ou erro via Toast.
+  - **Redirecionamento:** Após criação bem-sucedida, redireciona para a Home Page.
+
+  **Criação de VM a partir da Sugestão da IA**
+  - Formulário para criação de VMs com base em sugestões da IA.
+  - **Validação Backend:** Envia requisição `POST` para `/vms/suggest` com dados do formulário.
+  - **Feedback:** Exibe mensagens de sucesso ou erro via Toast.
+  - **Redirecionamento:** Após criação bem-sucedida, redireciona para a Home Page.
+
 ### Autenticação
 
 - **Login (`useLogin` hook):**
