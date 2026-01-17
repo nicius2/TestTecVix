@@ -3,6 +3,7 @@ import { UserController } from "../controllers/UserController";
 import { API_VERSION, ROOT_PATH } from "../constants/basePathRoutes";
 import { isManagerOrIsAdmin } from "../auth/isManagerOrIsAdmin";
 import { isAdmin } from "../auth/isAdmin";
+import { authUser } from "../auth/authUser";
 
 const BASE_PATH = API_VERSION.V1 + ROOT_PATH.USER; // Exemplo: /api/v1/user
 
@@ -17,6 +18,10 @@ const userController = makeUserController();
 // Rotas de CRUD para usuários
 userRoutes.get(`${BASE_PATH}`, async (req, res) => {
   await userController.listAll(req, res);
+});
+
+userRoutes.get(`${BASE_PATH}/token/:id`, authUser, async (req, res) => {
+  await userController.refreshToken(req, res);
 });
 
 userRoutes.get(`${BASE_PATH}/:id`, async (req, res) => {

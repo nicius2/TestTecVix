@@ -44,23 +44,27 @@ export const useListVms = () => {
     });
 
     setIsLoading(false);
+
     if (response.error) {
       if (!response.message.includes("expired")) toast.error(response.message);
       setVmList([]);
       setVmTotalCount(0);
       setTotalCountVMs(0);
-      goLogout();
       return;
     }
 
-    setVmList(response.data?.result);
-    setVmTotalCount(response.data?.totalCount);
-    setTotalCountVMs(response.data?.totalCount);
+    setVmList(response.data?.result || []);
+    setVmTotalCount(response.data?.totalCount || 0);
+    setTotalCountVMs(response.data?.totalCount || 0);
 
-    if (!currentIdVM && response.data?.result.length) {
-      setCurrentIdVM(response.data?.result[0].idVM);
-      setCurrentVMName(response.data?.result[0].vmName);
-      setCurrentVMOS(response.data?.result[0].os);
+    if (
+      !currentIdVM &&
+      response.data?.result &&
+      response.data.result.length > 0
+    ) {
+      setCurrentIdVM(response.data.result[0].idVM);
+      setCurrentVMName(response.data.result[0].vmName);
+      setCurrentVMOS(response.data.result[0].os);
     }
   };
 

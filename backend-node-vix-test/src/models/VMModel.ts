@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "../database/client";
 import { TVMCreate } from "../types/validations/VM/createVM";
 import { TVMUpdate } from "../types/validations/VM/updateVM";
@@ -73,8 +74,14 @@ export class VMModel {
   }
 
   async createNewVM(data: TVMCreate) {
+    console.log("VMModel.createNewVM data:", JSON.stringify(data, null, 2));
+    const dataToCreate: Prisma.vMUncheckedCreateInput = {
+      ...data,
+      // No explicit casting needed, Prisma handles string literal enum values
+    } as Prisma.vMUncheckedCreateInput;
+
     return await prisma.vM.create({
-      data: { ...data },
+      data: dataToCreate,
     });
   }
 
@@ -82,6 +89,13 @@ export class VMModel {
     return await prisma.vM.update({
       where: { idVM },
       data: { ...data, updatedAt: new Date() },
+    });
+  }
+
+  async updateStatus(idVM: number, status: "RUNNING" | "STOPPED" | "PAUSED") {
+    return await prisma.vM.update({
+      where: { idVM },
+      data: { status, updatedAt: new Date() },
     });
   }
 

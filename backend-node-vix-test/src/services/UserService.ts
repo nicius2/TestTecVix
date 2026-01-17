@@ -12,6 +12,7 @@ import {
   userUpdatedSchema,
 } from "../types/validations/User/updateUser"; // Corrigido
 import { userWhereInputSchema } from "../types/validations/User/userWhereInput";
+import { genToken } from "../utils/jwt";
 
 export class UserService {
   constructor() {}
@@ -56,6 +57,17 @@ export class UserService {
       currentUser,
     );
     return updatedUser;
+  }
+
+  async refreshToken(id: string) {
+    const user = await this.userModel.getById(id);
+
+    if (!user) {
+      throw new AppError(ERROR_MESSAGE.USER_NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+
+    const token = genToken({ id: user.idUser, role: user.role });
+    return { token };
   }
 
   async deleteUser(id: string, _currentUser: user) {

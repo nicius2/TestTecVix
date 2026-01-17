@@ -35,6 +35,12 @@ export class UserController {
     return res.status(STATUS_CODE.OK).json(result);
   }
 
+  async refreshToken(req: CustomRequest<unknown>, res: Response) {
+    const { id } = req.params;
+    const result = await this.userService.refreshToken(id.toString());
+    return res.status(STATUS_CODE.OK).json(result);
+  }
+
   async deleteUser(req: CustomRequest<unknown>, res: Response) {
     const { id } = req.params;
     const user = req.user as user;

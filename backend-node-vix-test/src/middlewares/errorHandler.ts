@@ -4,15 +4,9 @@ import { ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 export const errorHandler = (
-  err:
-    | AppError
-    | ZodError
-    | {
-        status?: number;
-      },
+  err: Error & { status?: number },
   _req: Request,
   res: Response,
-
   _next: NextFunction,
 ) => {
   if (err instanceof AppError) {
@@ -28,5 +22,16 @@ export const errorHandler = (
   if (err instanceof PrismaClientKnownRequestError) {
     return res.status(400).json(err);
   }
-  return res.status(err?.status || 500).json(err);
+
+  // Fallback for unknown errors (500)
+  const status = err.status || 500;
+  const message = err.message || "Internal Server Error";
+  console.error("Global Error Handler:", err); // Ensure it's logged on server too
+
+  return res.status(status).json({
+    status,
+    message,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    raw: err,
+  });
 };

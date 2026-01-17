@@ -21,15 +21,34 @@ export class VMController {
   }
 
   async createVM(req: CustomRequest<unknown>, res: Response) {
-    const user = req.user as user;
-    const result = await this.vMService.createNewVM(req.body, user);
-    return res.status(STATUS_CODE.CREATED).json(result);
+    try {
+      const user = req.user as user;
+      const result = await this.vMService.createNewVM(req.body, user);
+      return res.status(STATUS_CODE.CREATED).json(result);
+    } catch (error) {
+      console.error("Error in VMController.createVM:", error);
+      throw error;
+    }
   }
 
   async updateVM(req: CustomRequest<unknown>, res: Response) {
     const { idVM } = req.params;
     const user = req.user as user;
     const result = await this.vMService.updateVM(Number(idVM), req.body, user);
+    return res.status(STATUS_CODE.OK).json(result);
+  }
+
+  async startVM(req: CustomRequest<unknown>, res: Response) {
+    const { idVM } = req.params;
+    const user = req.user as user;
+    const result = await this.vMService.startVM(Number(idVM), user);
+    return res.status(STATUS_CODE.OK).json(result);
+  }
+
+  async getVMUsage(req: CustomRequest<unknown>, res: Response) {
+    const { idVM } = req.params;
+    const user = req.user as user;
+    const result = await this.vMService.getVMUsage(Number(idVM), user);
     return res.status(STATUS_CODE.OK).json(result);
   }
 

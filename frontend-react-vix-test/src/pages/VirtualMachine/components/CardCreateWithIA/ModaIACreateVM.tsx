@@ -8,7 +8,12 @@ import { useTranslation } from "react-i18next";
 import { CloseXIcon } from "../../../../icons/CloseXIcon";
 import { useState } from "react";
 import { VMCardIASugestion } from "./VMCardIASugestion";
-import { EOS, useZVMSugestion } from "../../../../stores/useZVMSugestion";
+import { EOS } from "../../../../stores/useZVMSugestion";
+import { useVmResource } from "../../../../hooks/useVmResource";
+import { genStrongPass } from "../../../../utils/genStrongPass";
+import { MIN_PASS_SIZE } from "../../../../configs/contants";
+import { useZUserProfile } from "../../../../stores/useZUserProfile";
+import { AbsoluteBackDrop } from "../../../../components/AbsoluteBackDrop";
 
 interface IProps {
   open: boolean;
@@ -19,15 +24,23 @@ interface IProps {
 export const ModaIACreateVM = ({ open, onClose, sx }: IProps) => {
   const { mode, theme } = useZTheme();
   const { t } = useTranslation();
-  const { setVmSugestion } = useZVMSugestion();
+  const {
+    createVm,
+    localizationOptions,
+    networkTypeOptions,
+    isLoadingCreateVM,
+  } = useVmResource();
+  const { idBrand } = useZUserProfile();
   const [description, setDescription] = useState("");
   const [openVMCardSuggestion, setOpenVMCardSuggestion] = useState(false);
   const [sugestions, setSugestions] = useState({
+    vmName: "",
     vCPU: 2,
     ram: 4,
     disk: 110,
     os: EOS.ubuntu2404,
   });
+
   const handleIASugestion = async () => {
     const response = {
       vCPU: 2,
@@ -35,20 +48,34 @@ export const ModaIACreateVM = ({ open, onClose, sx }: IProps) => {
       disk: 110,
       os: EOS.ubuntu2404,
     };
-    setDescription("");
     if (!response) return;
     setSugestions({
+      vmName: description,
       vCPU: +response.vCPU,
       ram: +response.ram,
       disk: +response.disk,
       os: response.os,
     });
+    setDescription("");
     setOpenVMCardSuggestion(true);
   };
 
-  const hadleAccept = () => {
+  const hadleAccept = async () => {
+    const vmPassword = genStrongPass(MIN_PASS_SIZE);
+    const vm = {
+      vmName: sugestions.vmName,
+      os: sugestions.os,
+      vCPU: sugestions.vCPU,
+      ram: sugestions.ram,
+      disk: sugestions.disk,
+      pass: vmPassword,
+      location: localizationOptions[0].value,
+      hasBackup: false,
+      networkType: networkTypeOptions[0].value,
+      idBrand: idBrand,
+    };
+    await createVm(vm);
     setOpenVMCardSuggestion(false);
-    setVmSugestion(sugestions);
     onClose();
   };
 
@@ -78,6 +105,7 @@ export const ModaIACreateVM = ({ open, onClose, sx }: IProps) => {
           ...sx,
         }}
       >
+        {isLoadingCreateVM && <AbsoluteBackDrop open={isLoadingCreateVM} />}
         <Stack
           sx={{
             flexDirection: "row",
@@ -144,7 +172,7 @@ export const ModaIACreateVM = ({ open, onClose, sx }: IProps) => {
             }}
           >
             <VMCardIASugestion
-              vmName={t("createVm.sugestion")}
+              vmName={sugestions.vmName}
               os={sugestions.os}
               cpu={sugestions.vCPU}
               disk={sugestions.disk}
@@ -213,7 +241,6 @@ export const ModaIACreateVM = ({ open, onClose, sx }: IProps) => {
                   lineHeight: "20px",
                 }}
               >
-                {/* {t("createVm.acceptSuggestionBtn")} */}
                 {t("createVm.accept")}
               </TextRob16Font1S>
             </Btn>
@@ -238,7 +265,6 @@ export const ModaIACreateVM = ({ open, onClose, sx }: IProps) => {
                   lineHeight: "20px",
                 }}
               >
-                {/* {t("createVm.acceptSuggestionBtn")} */}
                 {t("createVm.generateAgain")}
               </TextRob16Font1S>
             </Btn>

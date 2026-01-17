@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 const EVMStatus = z.enum(["RUNNING", "STOPPED", "PAUSED"]);
+const ETaskLocation = z.enum(["AZURE", "AWS", "GCP", "LOCAL"]);
+
 // Password validation regex
 export const passwordRegex = {
   numbers: /(?=.*\d.*\d)/,
@@ -11,7 +13,9 @@ export const passwordRegex = {
 };
 
 export const vMCreatedSchema = z.object({
-  vmName: z.string().optional(),
+  vmName: z.string().nullable().optional(),
+  pass: z.string().min(1, "Password is required"),
+  location: ETaskLocation.optional(),
   vCPU: z.number().min(1, "vCPU must be at least 1"),
   ram: z.number().min(1, "RAM must be at least 1 GB"),
   disk: z.number().min(20, "Disk must be at least 20 GBs"),

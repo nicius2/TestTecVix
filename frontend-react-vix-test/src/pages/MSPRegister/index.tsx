@@ -1,4 +1,4 @@
-import { Box, Modal, Stack } from "@mui/material";
+import { Box, Modal, Stack, Button } from "@mui/material";
 import { ScreenFullPage } from "../../components/ScreenFullPage";
 import { TextRob20Font1MB } from "../../components/Text1MB";
 import { useZTheme } from "../../stores/useZTheme";
@@ -16,6 +16,7 @@ import { ModalDeleteVMsFromMSP } from "./ModalDeleteVMsFromMSP";
 import { useBrandMasterResources } from "../../hooks/useBrandMasterResources";
 import { AbsoluteBackDrop } from "../../components/AbsoluteBackDrop";
 import { useVmResource } from "../../hooks/useVmResource";
+import { MSPRegisterForm } from './MSPRegisterForm'; // Changed import to named import
 
 export const MSPRegisterPage = () => {
   const { theme, mode } = useZTheme();
@@ -37,6 +38,7 @@ export const MSPRegisterPage = () => {
   const { isLoading } = useBrandMasterResources();
   const { isLoadingDeleteVM, deleteVM } = useVmResource();
   const [openModalUserNotCreated, setOpenModalUserNotCreated] = useState(false);
+  const [showForm, setShowForm] = useState(false); // State to control form visibility
 
   const resetAllStepStates = () => {
     setIsEditing([]);
@@ -56,6 +58,15 @@ export const MSPRegisterPage = () => {
   const handleAfterDeleteMSP = async () => {
     await Promise.all(vmsToBeDeleted.map((vm) => deleteVM(vm.idVM)));
     handleCancelAfterDeleteMSP();
+  };
+
+  const handleOpenForm = () => {
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    resetAll(); // Reset form data when closing
   };
 
   useEffect(() => {
@@ -88,41 +99,36 @@ export const MSPRegisterPage = () => {
         paddingBottom: "40px",
       }}
       subtitle={
-        <Box
-          sx={{
-            maxWidth: "646px",
-            "@media (max-width: 660px)": { maxWidth: "136px" },
-          }}
-        >
-          <SampleStepper
-            activeStep={activeStep}
-            stepsNames={[
-              t("mspRegister.stepOneTitle"),
-              t("mspRegister.stepTwoTitle"),
-            ]}
-          />
-        </Box>
+        showForm && ( // Only show subtitle (stepper) when form is active
+          <Box
+            sx={{
+              maxWidth: "646px",
+              "@media (max-width: 660px)": { maxWidth: "136px" },
+            }}
+          >
+            <SampleStepper
+              activeStep={activeStep}
+              stepsNames={[
+                t("mspRegister.stepOneTitle"),
+                t("mspRegister.stepTwoTitle"),
+              ]}
+            />
+          </Box>
+        )
       }
-      //  sx= estilização do componente pai
-      // children= elementos do componente
-      // className= estilização do componente
-      // isLoading= ativa um loaing na tela
-      // title= componente do titulo
-      // subtitle= componente do subtitulo
-      // keepSubtitle = false= mantem o subtitulo no caso de tela mobile ou pequena
-      // sxContainer= estilização do componente children
-      // sxTitleSubTitle= estilização do componente title e subtitle
     >
       {Boolean(isLoading || isLoadingDeleteVM) && <AbsoluteBackDrop open />}
-      <Stack
-        sx={{
-          width: "100%",
-          gap: "26px",
-          borderRadius: "16px",
-          boxSizing: "border-box",
-        }}
-      >
-        {
+      {showForm ? (
+        <MSPRegisterForm onCancel={handleCloseForm} />
+      ) : (
+        <Stack
+          sx={{
+            width: "100%",
+            gap: "26px",
+            borderRadius: "16px",
+            boxSizing: "border-box",
+          }}
+        >
           <Stack
             sx={{
               background: theme[mode].mainBackground,
@@ -156,13 +162,22 @@ export const MSPRegisterPage = () => {
                 >
                   {t("mspRegister.tableTitle")}
                 </TextRob16Font1S>
-                <MspTableFilters />
+                <Stack direction="row" gap="20px">
+                  <MspTableFilters />
+                  <Button
+                    onClick={handleOpenForm} // Use new handler to show form
+                    sx={{ textWrap: "nowrap" }}
+                    variant="contained"
+                  >
+                    {t("mspRegister.registerButton", "Cadastrar MSP")}
+                  </Button>
+                </Stack>
               </Box>
               <MspTable />
             </Stack>
           </Stack>
-        }
-      </Stack>
+        </Stack>
+      )}
       {modalOpen !== null && (
         <Modal
           open={modalOpen !== null}

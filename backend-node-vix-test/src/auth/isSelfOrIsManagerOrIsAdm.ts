@@ -11,11 +11,11 @@ export const isSelfOrIsManagerOrIsAdm = (
   next: NextFunction,
 ) => {
   const user = req.user as user;
-  const _idUserFromParams = Number(req.params.idUser);
+  const _idUserFromParams = req.params.idUser;
 
   // Allow if user is self, or if user is admin or manager
   if (
-    user.id !== _idUserFromParams &&
+    user.idUser !== _idUserFromParams &&
     user.role !== "admin" &&
     user.role !== "manager"
   ) {
