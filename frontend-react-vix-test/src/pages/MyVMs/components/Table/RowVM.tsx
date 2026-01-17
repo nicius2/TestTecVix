@@ -58,7 +58,10 @@ export const RowVM = ({ vm, index }: IProps) => {
   const handleConfirVMStatusChange = async () => {
     let updatedVM;
     if (vmIDToStart) {
-      updatedVM = await updateVMStatus({ idVM: vmIDToStart, status: "RUNNING" });
+      updatedVM = await updateVMStatus({
+        idVM: vmIDToStart,
+        status: "RUNNING",
+      });
     } else {
       updatedVM = await updateVMStatus({ idVM: vmIDToStop, status: "STOPPED" });
     }
