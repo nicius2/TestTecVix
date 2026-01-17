@@ -85,6 +85,28 @@ npm run format
 
 ---
 
+## 🚀 Endpoints de VM
+
+### Iniciar/Parar VM
+
+- **Endpoint:** `POST /api/v1/vm/{idVM}/start`
+- **Descrição:** Inicia ou para uma máquina virtual.
+- **Acesso:** `Manager` ou `Admin`.
+
+### Editar VM
+
+- **Endpoint:** `PUT /api/v1/vm/{idVM}`
+- **Descrição:** Atualiza os detalhes de uma máquina virtual.
+- **Acesso:** `Manager` ou `Admin`.
+
+### Deletar VM
+
+- **Endpoint:** `DELETE /api/v1/vm/{idVM}`
+- **Descrição:** Deleta uma máquina virtual (soft delete).
+- **Acesso:** Apenas `Admin`.
+
+---
+
 ## 🧪 Testes
 
 O projeto conta com **testes unitários e de integração**, garantindo confiabilidade e segurança da aplicação.
