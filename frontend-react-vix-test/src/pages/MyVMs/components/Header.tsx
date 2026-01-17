@@ -69,6 +69,7 @@ export const Header = () => {
 
   const handleSearch = (value: string) => {
     if (value === search) return;
+    console.log("Search term:", value);
     setSearch(value.trim());
   };
 
@@ -187,6 +188,7 @@ export const Header = () => {
             ) : null,
           }))}
           onChange={(val) => {
+            console.log("Selected MSP:", val);
             if (onlyMyVMs) setOnlyMyVMs(false);
             if (val) {
               setSelectedMSP({

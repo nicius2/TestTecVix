@@ -40,6 +40,8 @@ export const FormEditVM = ({ onClose }: IProps) => {
     isLoadingDeleteVM,
     getNetworkType,
     isLoadingUpdateVM,
+    startVM, // Added startVM
+    stopVM, // Added stopVM
   } = useVmResource();
 
   const { statusHashMap } = useStatusInfo();
@@ -128,12 +130,12 @@ export const FormEditVM = ({ onClose }: IProps) => {
   };
 
   const handleStopVM = async () => {
-    setStatus("STOPPED");
+    await stopVM(currentVM.idVM);
     onClose(true);
   };
 
   const handleStartVM = async () => {
-    setStatus("RUNNING");
+    await startVM(currentVM.idVM);
     onClose(true);
   };
 
