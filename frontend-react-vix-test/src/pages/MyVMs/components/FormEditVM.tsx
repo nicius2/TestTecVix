@@ -40,8 +40,7 @@ export const FormEditVM = ({ onClose }: IProps) => {
     isLoadingDeleteVM,
     getNetworkType,
     isLoadingUpdateVM,
-    startVM, // Added startVM
-    stopVM, // Added stopVM
+    updateVMStatus,
   } = useVmResource();
 
   const { statusHashMap } = useStatusInfo();
@@ -130,12 +129,12 @@ export const FormEditVM = ({ onClose }: IProps) => {
   };
 
   const handleStopVM = async () => {
-    await stopVM(currentVM.idVM);
+    await updateVMStatus({ idVM: currentVM.idVM, status: "STOPPED" });
     onClose(true);
   };
 
   const handleStartVM = async () => {
-    await startVM(currentVM.idVM);
+    await updateVMStatus({ idVM: currentVM.idVM, status: "RUNNING" });
     onClose(true);
   };
 
@@ -205,12 +204,11 @@ export const FormEditVM = ({ onClose }: IProps) => {
             }}
           >
             <LabelInputVM
-              onChange={() => {}}
+              onChange={setVmPassword}
               value={vmPassword}
               label={t("createVm.password")}
               placeholder={t("createVm.userPassword")}
               type="password"
-              disabled
             />
             <PasswordValidations vmPassword={vmPassword} />
           </Stack>

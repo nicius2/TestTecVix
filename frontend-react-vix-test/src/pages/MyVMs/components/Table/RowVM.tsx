@@ -23,6 +23,7 @@ import { StopCircleIcon } from "../../../../icons/StopCircleIcon";
 import { ModalStartVM } from "../ModalStartVM";
 import { ModalStopVM } from "../ModalStopVM";
 import { useStatusInfo } from "../../../../hooks/useStatusInfo";
+import { useZUserProfile } from "../../../../stores/useZUserProfile";
 
 interface IProps {
   vm: IVMCreatedResponse;
@@ -31,6 +32,7 @@ interface IProps {
 
 export const RowVM = ({ vm, index }: IProps) => {
   const { mode, theme } = useZTheme();
+  const { role } = useZUserProfile();
   const [row, setRow] = React.useState<IVMCreatedResponse>(vm);
   const [vmIDToStop, setVmIDToStop] = React.useState<number>(0);
   const [vmIDToStart, setVmIDToStart] = React.useState<number>(0);
@@ -393,7 +395,11 @@ export const RowVM = ({ vm, index }: IProps) => {
           >
             {getStatus(row).isRunning && (
               <IconButton
-                disabled={row.status === "STOPPED" || row.status === null}
+                disabled={
+                  row.status === "STOPPED" ||
+                  row.status === null ||
+                  role === "member"
+                }
                 onClick={() => setVmIDToStop(row.idVM)}
                 sx={{
                   gap: "8px",
@@ -406,7 +412,11 @@ export const RowVM = ({ vm, index }: IProps) => {
             )}
             {getStatus(row).isStopped && (
               <IconButton
-                disabled={row.status === "RUNNING" || row.status === null}
+                disabled={
+                  row.status === "RUNNING" ||
+                  row.status === null ||
+                  role === "member"
+                }
                 onClick={() => setVmIDToStart(row.idVM)}
                 sx={{
                   gap: "8px",
@@ -419,6 +429,7 @@ export const RowVM = ({ vm, index }: IProps) => {
             )}
             <Btn
               onClick={() => handleClick(row)}
+              disabled={role === "member"}
               sx={{
                 borderRadius: "50%",
               }}
