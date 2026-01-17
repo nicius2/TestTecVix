@@ -25,6 +25,8 @@ A Home Page agora inclui cards de máquinas virtuais (VMs) com funcionalidades a
 - **Edição de Nome da VM:** Renomeie suas VMs através de um modal acessível pelo card.
 - **Ajuste de Tamanho de Disco da VM:** Modifique o tamanho do disco das suas VMs usando um slider e um aviso de confirmação.
 - **Controle de Acesso Baseado em Função (RBAC):** As ações de gerenciamento de VM (alteração de status, edição de nome e ajuste de disco) são desativadas para usuários com o perfil de "membro", sendo restritas a perfis com privilégios mais altos (ex: administrador).
+- **Edição de VM via Modal:** Edite todos os detalhes da VM, incluindo nome, sistema operacional, vCPU, RAM e disco, através de um modal de edição completo.
+- **Deleção de VM (Apenas Admin):** Administradores podem deletar VMs diretamente da interface, com uma caixa de diálogo de confirmação para previnir a exclusão acidental.
 - **Exibição Aprimorada de Informações da VM:** Cada card de VM exibe detalhes essenciais como Nome da VM, Status, CPU, Memória, Disco, Sistema Operacional e Proprietário.
 - **Atualizações de Status em Tempo Real e Monitoramento de Tarefas:** Os cards exibem o status em tempo real e informações sobre tarefas pendentes (ex: operações de desligamento ou inicialização), fornecendo feedback imediato ao usuário.
 - **Integração com Hooks de Recurso de VM:** As funcionalidades utilizam `useVmResource` para interações com a API (atualização de nome, tamanho de disco e status da VM) e `useListVms` para buscar e gerenciar a lista de VMs.
